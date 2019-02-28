@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone = no"/>
+    <title>秒来大钱</title>
+    <link rel="stylesheet" href="https://mirror.erbicun.cn/2018/css/common.css?v=1549431141">
+                <link href="https://mirror.erbicun.cn/2018/css/style.css?v=1549431141" rel="stylesheet" type="text/css"/>
+    <script src="//lib.sinaapp.com/js/zepto/1.0/zepto.min.js"></script>
+</head>
+<body ><div class="seconds_to_earn">
+    <div class="seconds_to_earn_box" id="seconds_to_earn_box">
+        <div class="notice clearfix">
+            <i class="marquee_text_ico fl"><img src="https://mirror.erbicun.cn/2018/images/home_icon_notice.png"></i>
+            <div id="message" class="padding_r1"></div>
+        </div>
+        <div class="user_info">
+            <div class="box_flex1">
+                <div class="box_flex2 goto_link" data-link="/ios/user/home.html">
+                    <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/b5bwczVTsqJM2tYAxBLEuMs5Wo9yUNpF7Via1yIfxelRvXLfOHWf9Thbmtl09qpKBMvB6m3QXnqFJu7BdzHyj8w/132" class="round_img">
+                    <div class="box_flex3">
+                        <p class="font3">Robert</p>
+                        <p class="red_border1" >进入个人中心</p>
+                    </div>
+                </div>
+                <div class="goto_link" data-link="/ios/user/income.html">
+                    <p class="red1 font2"><span class="font1" id="user_balance">8.58</span>元</p>
+                    <p class="font4">提现中心
+                        <span class="ver_align">
+                            <img class="right_arrow" src="https://mirror.erbicun.cn/2018/images/home_icon_right_arrow.png">
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="user_task">
+                <div>
+                    <p class="corl1">累计收益(元)</p>
+                    <p class="center1" id="user_income">8.58</p>
+                </div>
+                <div>
+                    <p class="corl1">今日收入(元)</p>
+                    <p class="center1" id="user_today_income">0.00</p>
+                </div>
+                <div>
+                    <p class="corl1">今日收徒(人)</p>
+                    <p class="center1" id="user_today_invite">0</p>
+                </div>
+            </div>
+        </div>
+        <section>
+            <p class="font5">任务赚钱</p>
+            <div class="section">
+                <div class="border1 goto_link" data-link="/ios/tasks.html"></div>
+                <div class="border1 goto_link" data-link="/ios/share.html"></div>
+            </div>
+        </section>
+        <section>
+            <p class="font5">更多功能</p>
+            <div class="section_more">
+                <div class="box_more">
+                    <div class="list_box  goto_link" data-link="/ios/checkin.html"></div>
+                    <div class="list_box goto_link" data-link="/ios/custom/tasks.html?refresh=1"></div>
+                </div>
+                <div class="box_more">
+                    <div class="list_box goto_link" data-link="/ios/ranks.html"></div>
+                    <div class="list_box goto_link"
+                         data-link="/static/2018/html/beginner_guidance.html"></div>
+                </div>
+                <div class="box_more">
+                    <div class="list_box goto_link" data-link="/ios/user/game_list.html"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <footer class="footer">
+        <p>miaozhuandaqian.com</p>
+        <p>官方唯一网址</p>
+    </footer>
+</div>
+
+
+
+
+
+<script>
+    var showSignActPop = 0;
+    var isValidAct = 0;
+    var isShowActPop = 0;
+    var announcement = "春节期间微信和支付宝提现正常打款";
+    var mdm = 1;
+</script>
+
+		<script src="//lib.sinaapp.com/js/jquery/2.0/jquery.min.js"></script>
+		<script src="https://mirror.erbicun.cn/2018/js/base.js?v=1549923735"></script>
+		<script src="https://mirror.erbicun.cn/2018/js/handlebars.min.js"></script>
+		<script src="https://mirror.erbicun.cn/2018/js/index.js?v=1549923735"></script>
+<script src="https://mirror.erbicun.cn/2018/js/fastclick.min.js"></script>
+<script>
+    //动态适配
+    (function (doc, win) {
+        var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = 16 * (clientWidth / 375) + 'px';
+                };
+        if (!doc.addEventListener) return;
+        win.addEventListener(resizeEvt, recalc, false);
+        doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        FastClick.attach(document.body);
+    });
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?6de7a5bf2a73f328d02455cc5727aba6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+</html>
