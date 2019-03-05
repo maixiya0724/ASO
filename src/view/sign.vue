@@ -14,50 +14,22 @@
         </header>
         <div class="signCenter"></div>
         <div class="signData">
-            <div class="signTitle">已连续签到第 <span>3</span> 天</div>
+            <div class="signTitle">已连续签到第 <span>{{signList.signDay}}</span> 天</div>
+
             <div class="signDataList">
-                <div class="signItemed">
+                <div class="signItemed" v-for="(item,index) in signList.list" :key="index" v-if="item.sign=='1'">
                     <div class="itemIcon">
                         <img src="../assets/img/signDayed.png" alt="">
                     </div>
-                    <div class="signTime">02-12</div>
+                    <div class="signTime">{{item.time}}</div>
                 </div>
-                <div class="signItem">
+                <div class="signItem" v-for="(item,index) in signList.list" :key="index" v-if="item.sign!='1'" @click="signData">
                     <div class="itemIcon">
                         <img src="../assets/img/signDay.png" alt="">
                     </div>
-                    <div class="signTime">02-12</div>
+                    <div class="signTime">{{item.time}}</div>
                 </div>
-                <div class="signItemed">
-                    <div class="itemIcon">
-                        <img src="../assets/img/signDayed.png" alt="">
-                    </div>
-                    <div class="signTime">02-12</div>
-                </div>
-                <div class="signItem">
-                    <div class="itemIcon">
-                        <img src="../assets/img/signDay.png" alt="">
-                    </div>
-                    <div class="signTime">02-12</div>
-                </div>
-                <div class="signItemed">
-                    <div class="itemIcon">
-                        <img src="../assets/img/signDayed.png" alt="">
-                    </div>
-                    <div class="signTime">02-12</div>
-                </div>
-                <div class="signItem">
-                    <div class="itemIcon">
-                        <img src="../assets/img/signDay.png" alt="">
-                    </div>
-                    <div class="signTime">02-12</div>
-                </div>
-                <div class="signItem">
-                    <div class="itemIcon">
-                        <img src="../assets/img/signDay.png" alt="">
-                    </div>
-                    <div class="signTime">02-12</div>
-                </div>
+                
             </div>
         </div>
         <div class="activeMoney">
@@ -69,9 +41,9 @@
             <div class="signDayType">
                 <div class="signDayTypeItem">
                     <div class="itemMoney">
-                        <div class="itemMoneyNum"><span>0.3</span>元</div>
+                        <div class="itemMoneyNum"><span>0.2</span>元</div>
                         <p>现金奖励</p>
-                        <div class="successSign">
+                        <div class="successSign" v-if="signDay>=3">
                             <img src="../assets/img/successSign.png" alt="">
                         </div>
                     </div>
@@ -82,24 +54,23 @@
                     <div class="itemMoney">
                         <div class="itemMoneyNum"><span>0.3</span>元</div>
                         <p>现金奖励</p>
-                        <div class="successSign">
+                        <div class="successSign" v-if="signDay>=5">
                             <img src="../assets/img/successSign.png" alt="">
                         </div>
                     </div>
-                    <div class="itemInfo">连续签到3天</div>
+                    <div class="itemInfo">连续签到5天</div>
                 </div>
                 <div class="next"></div>
                 <div class="signDayTypeItem">
                     <div class="itemMoney">
-                        <div class="itemMoneyNum"><span>0.3</span>元</div>
+                        <div class="itemMoneyNum"><span>0.5</span>元</div>
                         <p>现金奖励</p>
-                        <div class="successSign">
+                        <div class="successSign" v-if="signDay>=7">
                             <img src="../assets/img/successSign.png" alt="">
                         </div>
                     </div>
-                    <div class="itemInfo">连续签到3天</div>
+                    <div class="itemInfo">连续签到7天</div>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -107,16 +78,24 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+        signDay:3,
+        signDayNum:0,
+        signList:{signDay:3,list:[{sign:1,time:"02-11"},{sign:1,time:"02-11"},{sign:1,time:"02-11"},{sign:0,time:"02-11"},{sign:0,time:"02-11"},{sign:0,time:"02-11"},{sign:0,time:"02-11"}]}
+    };
   },
   created() {
-    this.remFn();
-  },
-  mounted() {},
-  methods: {
-    remFn:function() {
       
-    },
+  },
+  mounted() {
+    
+  },
+  methods: {
+      //签到接口
+      signData(){
+        
+      }
+    
   }
 };
 </script>

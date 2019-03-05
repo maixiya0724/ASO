@@ -73,19 +73,19 @@
         <div class="question_list" @click="question($event)">
             <div class="question">更换或绑定不上提现账号怎么办？<em></em></div>
             <div class="answer dn" style="display:none;">
-                <p>请联系客服更改，您可添加秒来大钱微信公众号（la6680），在公众号内直接发送秒赚ID账号、需要更改或绑定的账号和对应的姓名，以及修改的原因。</p>
+                <p>请联系客服更改，您可添加秒来大钱微信公众号（la6680），在公众号内直接发送钱多多ID账号、需要更改或绑定的账号和对应的姓名，以及修改的原因。</p>
             </div>
         </div>
         <div class="question_list" @click="question($event)">
             <div class="question">关注公众号后还显示关注页面怎么办？<em></em></div>
             <div class="answer dn" style="display:none;">
-                <p>在秒来大钱公众号的底部菜单中，点击“提现绑定”按钮，如果显示“微信绑定成功”，则可以返回秒赚进行提现了；如果绑定失败，请联系客服解决。</p>
+                <p>在秒来大钱公众号的底部菜单中，点击“提现绑定”按钮，如果显示“微信绑定成功”，则可以返回钱多多进行提现了；如果绑定失败，请联系客服解决。</p>
             </div>
         </div>
         <div class="question_list" @click="question($event)">
             <div class="question">提现如何实名认证？<em></em></div>
             <div class="answer dn" style="display:none;">
-                <p>微信提现实名认证：首先需要在微信钱包绑定银行卡，然后在秒赚微信提现之前，需要填写微信钱包银行卡持有人的姓名。</p>
+                <p>微信提现实名认证：首先需要在微信钱包绑定银行卡，然后在钱多多微信提现之前，需要填写微信钱包银行卡持有人的姓名。</p>
                 <p>支付宝提现实名认证：支付宝提现前，需要填写实名认证的支付宝账号及对应姓名。</p>
                 <p class="deep_red">（注意！您的支付宝账号若为邮箱账号，则必须填写邮箱账号，不能只填写绑定的手机号，否则无法到账。） </p>
             </div>
@@ -96,7 +96,7 @@
         <div class="question_list" @click="question($event)">
             <div class="question">手机号绑定不上怎么办？<em></em></div>
             <div class="answer dn" style="display:none;">
-                <p>如果您绑定不上手机号，或收不到语音验证码等，请联系客服手动绑定。您可添加秒来大钱微信公众号（la6680），在公众号对话框内，直接发送您的秒赚ID账号和需要绑定的手机号以及原因。</p>
+                <p>如果您绑定不上手机号，或收不到语音验证码等，请联系客服手动绑定。您可添加秒来大钱微信公众号（la6680），在公众号对话框内，直接发送您的钱多多ID账号和需要绑定的手机号以及原因。</p>
             </div>
         </div>
         <div class="question_list" @click="question($event)">

@@ -19,29 +19,35 @@
                         <div class="left_user">
                             <div class="top_user_info">
                                 <img
-                                    src="http://thirdwx.qlogo.cn/mmopen/vi_32/XFXcvNXnz8GEWRibtN0ad219bVBnw0UAbzd01ic9ntnOZ0MG6lftWMNnYZ9HxhEB33L7zvmM9zoaqIytL4TDCIQQ/132"
+                                    :src="userInfo.avatar"
                                     class="head_portrait"
                                 >
                                 <p>
                                     用户
-                                    <span>66096151</span>
+                                    <span>{{userInfo.nickname}}</span>
                                 </p>
                             </div>
-                            <div class="bottom_user_info" >
-                                <li class="detail_list goto_link" @click="goRecord" data-link="/ios/my/apps.html">
+                            <div class="bottom_user_info">
+                                <li
+                                    class="detail_list goto_link"
+                                    @click="goRecord"
+                                    data-link="/ios/my/apps.html"
+                                >
                                     <img src="../../assets/img/sr_icon.png">
                                     <p>收入明细</p>
                                 </li>
                                 <li
                                     class="detail_list goto_link"
-                                    data-link="/ios/user/invites.html" @click="goTeacherDe"
+                                    data-link="/ios/user/invites.html"
+                                    @click="goTeacherDe"
                                 >
                                     <img src="../../assets/img/st_icon.png">
                                     <p>收徒明细</p>
                                 </li>
                                 <li
                                     class="detail_list goto_link"
-                                    data-link="/ios/my/enchashments.html" @click="goCashDe"
+                                    data-link="/ios/my/enchashments.html"
+                                    @click="goCashDe"
                                 >
                                     <img src="../../assets/img/tx_icon.png">
                                     <p>提现明细</p>
@@ -54,13 +60,13 @@
                                 data-link="/ios/user/income.html"
                             >
                                 <p>
-                                    <span>8.58</span>元
+                                    <span>{{userInfo.total_score}}</span>元
                                 </p>
                                 <div class="btn_center" @click="goCash">提现中心</div>
                             </div>
                             <div class="pc_withdrawal_center goto_link" data-link="/ios/share.html">
                                 <p>
-                                    <span>0</span>人
+                                    <span>{{userInfo.invit_num}}</span>人
                                 </p>
                                 <div class="btn_recruit">收徒数量</div>
                             </div>
@@ -86,7 +92,12 @@
             -->
             <div class="pc_type_list">
                 <div class="list">
-                    <a class="pc_list" href="javascript:;" data-link="/ios/my/problem.html" @click="goProblem">
+                    <a
+                        class="pc_list"
+                        href="javascript:;"
+                        data-link="/ios/my/problem.html"
+                        @click="goProblem"
+                    >
                         <div class="pc_left_box">
                             <img src="../../assets/img/list1_icon.png" class="left_icon">
                         </div>
@@ -99,7 +110,12 @@
                             </div>
                         </div>
                     </a>
-                    <a class="pc_list" href="javascript:;" @click="goBindWx"  data-link="/ios/my/subscribe.html">
+                    <a
+                        class="pc_list"
+                        href="javascript:;"
+                        @click="goBindWx"
+                        data-link="/ios/my/subscribe.html"
+                    >
                         <div class="pc_left_box">
                             <img src="../../assets/img/list2_icon.png" class="left_icon">
                         </div>
@@ -107,13 +123,18 @@
                             <span class="list_text">关注微信</span>
                             <div class="right_icon">
                                 <span class="right_text">联系客服</span>
-                                <img
+                                <img class="jiantou"
                                     src="https://mirror.erbicun.cn/2018/images/icon_right_arrow.png"
                                 >
                             </div>
                         </div>
                     </a>
-                    <a class="pc_list" href="javascript:;" @click="goBindPhone" data-link="/ios/my/to_bind_mobile.html">
+                    <a
+                        class="pc_list"
+                        href="javascript:;"
+                        @click="goBindPhone"
+                        data-link="/ios/my/to_bind_mobile.html"
+                    >
                         <div class="pc_left_box">
                             <img src="../../assets/img/list3_icon.png" class="left_icon">
                         </div>
@@ -121,7 +142,7 @@
                             <span class="list_text">绑定手机号</span>
                             <div class="right_icon">
                                 <span class="right_text">18519762816</span>
-                                <img
+                                <img class="jiantou"
                                     src="https://mirror.erbicun.cn/2018/images/icon_right_arrow.png"
                                 >
                             </div>
@@ -194,45 +215,63 @@
 </template>
 
 <script>
+import httpUrl from "../../tool/url.js";
+
 export default {
   data() {
-    return {};
+    return {
+        userInfo:"",
+    };
   },
-  created() {
-    
-  },
+  created() {},
   mounted() {
-    
+      this.getUserInfo()
   },
   methods: {
-      goCash(){
-          this.$router.push({path:"/cash",query:{}})
-      },
-      taskDetails(){
-          this.$router.push({path:"/cash",query:{}})
-      },
-      goRecord(){
-          this.$router.push({path:"/record",query:{}})
-      },
-      goTeacherDe(){
-          this.$router.push({path:"/teacherDe",query:{}})
-      },
-      goCashDe(){
-          this.$router.push({path:"/cashlist",query:{}})
-      },
-      goProblem(){
-          this.$router.push({path:"/problem",query:{}})
-      },
-      goBindPhone(){
-          this.$router.push({path:"/bindphone",query:{}})
-      },
-      goBindWx(){
-          this.$router.push({path:"/bindWx",query:{}})
-      }
+    goCash() {
+      this.$router.push({ path: "/cash", query: {} });
+    },
+    taskDetails() {
+      this.$router.push({ path: "/cash", query: {} });
+    },
+    goRecord() {
+      this.$router.push({ path: "/record", query: {} });
+    },
+    goTeacherDe() {
+      this.$router.push({ path: "/teacherDe", query: {} });
+    },
+    goCashDe() {
+      this.$router.push({ path: "/cashlist", query: {} });
+    },
+    goProblem() {
+      this.$router.push({ path: "/problem", query: {} });
+    },
+    goBindPhone() {
+      this.$router.push({ path: "/bindphone", query: {} });
+    },
+    goBindWx() {
+      this.$router.push({ path: "/bindWx", query: {} });
+    },
+    async getUserInfo() {
+      return httpUrl
+        .post("/WebApi/User/getUserInfo", { uid: 1232 })
+        .then(res => {
+          if (res.data.status == "1") {
+            this.userInfo = res.data.data;
+          } else {
+            console.log("请求用户数据失败");
+          }
+        });
+    },
+
   }
 };
 </script>
 <style lang="less" >
+.jiantou{
+    position: relative;
+    top: 0.25rem;
+}
 .center {
   width: 100%;
   height: 100%;

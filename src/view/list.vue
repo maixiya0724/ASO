@@ -7,7 +7,7 @@
         <a href="javascript:history.back(-1)" class="width1">
           <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png">
         </a>
-        <span id="code" >限时任务</span>
+        <span id="code">限时任务</span>
         <a href="javascript:location.reload();" class="width1">
           <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png">
         </a>
@@ -21,28 +21,25 @@
         infinite-scroll-disabled="loading"
         infinite-scroll-distance="10"
       >
-        <div class="list list1 list_padding1" v-for="(item,index) in adListData" :key="index" @click="openDownkey">
+        <div
+          class="list list1 list_padding1"
+          v-for="(item,index) in adListData"
+          :key="index"
+          
+        >
           <input
             class="task_id"
             type="hidden"
             value="646f783d29686db981c01d00272960c44182c2c1400003808d493b3cf7b9cb84"
             readonly
           >
-          <input
-            class="app_id"
-            type="hidden"
-            :value="item.appid"
-            readonly
-          >
+          <input class="app_id" type="hidden" :value="item.appid" readonly>
           <div class="left_img1 MZ-blur">
-            <img
-              :src="item.thumb"
-              class="left_img"
-            >
+            <img :src="item.thumb" class="left_img">
           </div>
           <div class="flex1 task-info" data-restnum="27" data-message="" @click="callAppAction">
             <p class="app_title">
-              {{item.appName}}
+              {{item.app_name}}
               <i class="three_kinds_red border2">付费</i>
             </p>
             <p>剩余27份</p>
@@ -54,8 +51,6 @@
             </div>
           </div>
         </div>
-       
-        
       </div>
       <div class="loadMore" v-if="loadMoreData">
         <div class="loadImage"></div>
@@ -63,7 +58,7 @@
       </div>
       <p class="want_to_make">想赚更多？邀请好友，轻松赚11元分成</p>
       <div class="footer_btn">
-        <button class="btn1" id="invite_friend">邀请好友</button>
+        <button class="btn1" id="invite_friend" @click="shareBtn">邀请好友</button>
       </div>
     </div>
     <div class="keyBox" id="launch_key" v-if="openKey">
@@ -81,7 +76,7 @@
         </div>
       </div>
     </div>
-    <div class="keyBox"   id="download_key" v-if="downApp">
+    <div class="keyBox" id="download_key" v-if="downApp">
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
         <div class="helper_key">
@@ -91,9 +86,13 @@
           </p>
           <p>任务期间需开启钱多多</p>
           <img src="../assets/img/icon4-75.png">
-          <button class="download_app" @click="download_app">立即下载</button>
+          <button class="download_app"  @click="download_app"><span >立即下载</span></button>
           <p>每个人的助手可能不同</p>
-          <img src="https://mirror.erbicun.cn/2018/images/toast_btn_close.png" @click="closeDownloadKey" class="close_btn">
+          <img
+            src="https://mirror.erbicun.cn/2018/images/toast_btn_close.png"
+            @click="closeDownloadKey"
+            class="close_btn"
+          >
         </div>
       </div>
     </div>
@@ -126,11 +125,14 @@
           </div>
           <button class="trust_app" v-if="!downFiveTime">
             信任钱多多
-            <span  class="time">{{fiveTime}}s</span>
+            <span class="time">{{fiveTime}}s</span>
           </button>
-          <button class="trust_app" style="background: #fe6631;color: rgba(255, 255, 255, 0.5);box-shadow: 0 0.25rem 0.5rem 0 rgba(254, 102, 49, 1)" v-if="downFiveTime" @click="trustKeyFn">
-            信任钱多多 
-          </button>
+          <button
+            class="trust_app"
+            style="background: #fe6631;color: rgba(255, 255, 255, 0.5);box-shadow: 0 0.25rem 0.5rem 0 rgba(254, 102, 49, 1)"
+            v-if="downFiveTime"
+            @click="trustKeyFn"
+          >信任钱多多</button>
           <button class="launch_app open_key_button" @click="callAppAction">打开钱多多</button>
         </div>
       </div>
@@ -140,19 +142,37 @@
       <img src="https://mirror.erbicun.cn/2018/images/tips_open_in_safari.png">
     </div>
     <!-- 验证码 -->
-    <div id="veCode">
+    <div id="veCode"></div>
+    <!-- 弹窗 -->
+    <div class="alert">
+        <div class="alertMain">
+          <div class="alertText">
+            <p>争抢失败,任务已被抢光 </p>
+            <p>请您再试试其他任务</p>
+          </div>
+          <div class="alertBtn">确定</div>
+        </div>
+    </div>
 
+    <!-- 已经领取过 -->
+    <div class="alert">
+        <div class="alertMain">
+          <div class="alertText">
+            <p>您已试用过该APP</p>
+          </div>
+          <div class="alertBtn">确定</div>
+        </div>
     </div>
   </div>
 </template>
 <script>
 import { InfiniteScroll } from "mint-ui";
 import Vue from "vue";
-import { Toast } from 'mint-ui';
+import { Indicator } from "mint-ui";
 import { setTimeout, setInterval, clearInterval } from "timers";
 Vue.use(InfiniteScroll);
-import $http from "../tool/url.js"
-import Axios from "axios"
+import $http from "../tool/url.js";
+import { Toast } from "mint-ui";
 export default {
   data() {
     return {
@@ -160,12 +180,12 @@ export default {
       params: this.$route.query,
       openKey: false,
       trustKey: false,
-      downApp:false,
-      fiveTime:5,
-      downFiveTime:false,
-      adListData:[],
-      loadMoreData:false,
-      websocket: {}
+      downApp: false,
+      fiveTime: 5,
+      downFiveTime: false,
+      adListData: [],
+      loadMoreData: false,
+      websocket: {},
     };
   },
   created() {
@@ -174,80 +194,97 @@ export default {
 
   mounted() {
     this.issafari();
-    this.hybridApp();
-    this.adList()
-    this.veCode()
+    this.adList();
+    this.veCode();
+    setTimeout((res)=>{
+      this.hybridApp();
+    },2000)
+  },
+  destroyed(){
+    this.websocket.close()
   },
   methods: {
-    async adList(){
-      return Axios.get("http://api.xiaojushiwan.com/advertising?channel=103",).then(res=>{
-          if(res.data.code=="200"){
-            this.adListData = res.data.data
-          }else{
-            Toast({
-              message:"请求列表失败",
-              position:"center",
-              duration:2000
-            })
-          }
-      })
+    async adList() {
+      return $http.get(
+        "/Ad/getList"
+      ).then(res => {
+
+        if (res.data.status == "1") {
+          this.adListData = res.data.data;
+        } else {
+          Toast({
+            message: "请求列表失败",
+            position: "center",
+            duration: 2000
+          });
+        }
+      });
     },
+
     // 判断是否是safari浏览器
     issafari: function() {
       /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
         ? (this.issafariBrowser = true)
         : (this.issafariBrowser = false);
     },
-    veCode(){
-      let captchaIns;
-      initNECaptcha({
-        element: '#veCode',
-        captchaId: 'd7cced91c5c545fba3383794adff9d44',
-        mode: 'popup',
-        width: '320px',
-        onClose: function () {
-          // 弹出关闭结束后将会触发该函数
-          captchaIns.destroy()
+    veCode() {
+      var captchaIns;
+      initNECaptcha(
+        {
+          element: "#veCode",
+          captchaId: "d7cced91c5c545fba3383794adff9d44",
+          mode: "popup",
+          width: "320px",
+          onClose: function() {
+            // 弹出关闭结束后将会触发该函数
+            captchaIns.destroy();
+          },
+          onload() {
+            captchaIns.refresh();
+          },
+          // 成功时出发的回调
+          onVerify() {
+            console.log("成功了");
+          }
         },
-        onload(){
-          captchaIns.refresh()
+        function(instance) {
+          // 初始化成功后得到验证实例instance，可以调用实例的方法
+          captchaIns = instance;
         },
-        // 成功时出发的回调
-        onVerify(){
-          console.log("成功了")
+        function(err) {
+          // 初始化失败后触发该函数，err对象描述当前错误信息
         }
-
-      }, function (instance) {
-        // 初始化成功后得到验证实例instance，可以调用实例的方法
-        captchaIns = instance
-      }, function (err) {
-        // 初始化失败后触发该函数，err对象描述当前错误信息
-      })
+      );
 
       // 监听button的点击事件，弹出验证码
-      document.getElementById('code').addEventListener('click', function () {
-        captchaIns && captchaIns.popUp()
-      })
-      
+      document.getElementById("code").addEventListener("click", function() {
+        captchaIns && captchaIns.popUp();
+      });
     },
     loadMore() {
       // 加载更多
-      this.loadMoreData= false;
+      this.loadMoreData = false;
       return false;
     },
     downAppFn() {
-      this.downApp=false;
+      this.downApp = false;
       this.downFiveTime = true;
-      
     },
     // 去下载钥匙
-    openDownkey(){
-      this.downApp = true;
+    openDownkey() {
+      if(localStorage.getItem("trustKey")){ 
+        this.openKey=false;
+      }else{
+        this.downApp = true;
+      }
     },
-    logined() { // 开始检测登录状态
+    logined() {
+      // 开始检测登录状态  储存信息
       if (this.params.token) {
+         localStorage.setItem("token",this.params.token)
+         localStorage.setItem("token_id",this.params.token_id)
         //已登录
-        //this.$router.push({name:"home",params:this.params})
+       // this.$router.push({name:"home",params:this.params})
       }
     },
     // 调取原生app
@@ -258,18 +295,40 @@ export default {
       location.href = IosUrl;
     },
     hybridApp() {
+
       let that = this;
       window.WebSocket = window.WebSocket || window.MozWebSocket;
       this.websocket = new WebSocket(
-        "ws:" + this.params.uip + ":9000",
+        "ws://127.0.0.1:9000",
         "echo-protocol"
       );
+     
+      Indicator.open({
+        text: "正在链接钥匙"
+      });
+      setTimeout(()=>{
+        Indicator.close();
+      })
       this.websocket.onopen = function() {
         //连接客户端触发的函数
         console.log("打开成功");
       };
+      this.websocket.onerror = function() {
+        //链接失败就打开重新下载的弹窗
+        console.log("链接失败");
+      //that.openKey = true;
+      };
     },
+    // 打开app
     callAppAction: function() {
+      alert(this.websocket.readyState)
+      
+      if(this.websocket.readyState!="1"){
+        console.log("断开连接，调用app")
+        this.callApp()
+        return false;
+      }
+
       let that = this;
       this.trustKey = false;
       this.websocket.send(
@@ -286,57 +345,127 @@ export default {
           //未安装
           that.openKey = true;
         } else {
-          //已安装
+          //已安装 打开app
         }
       };
     },
-    downloadKey(){// 下载钥匙应用
-      this.openKey=false;
-      this.trustKey = true;
 
-      clearInterval(timer)
-      var timer=setInterval(()=>{
-        this.fiveTime--
-        if(this.fiveTime<=0){
-          clearInterval(timer)
-          this.downFiveTime=true;
+    downloadKey() {
+      // 下载钥匙应用
+      this.openKey = false;
+      this.trustKey = true;
+      clearInterval(timer);
+      var timer = setInterval(() => {
+        this.fiveTime--;
+        if (this.fiveTime <= 0) {
+          clearInterval(timer);
+          this.downFiveTime = true;
         }
-      },1000)
+      }, 1000);
     },
-    closeDownloadKey(){
-      this.downApp=false;
+    closeDownloadKey() {
+      this.downApp = false;
     },
     // 下载钥匙
-    download_app(){
-      this.downApp=false;
+    download_app() {
+      this.downApp = false;
       this.trustKey = true;
       // 倒计时去信任
-      clearInterval(timer)
-      var timer=setInterval(()=>{
-        this.fiveTime--
-        if(this.fiveTime<=0){
-          clearInterval(timer)
-          this.downFiveTime=true;
+      clearInterval(timer);
+      var timer = setInterval(() => {
+        this.fiveTime--;
+        if (this.fiveTime <= 0) {
+          clearInterval(timer);
+          this.downFiveTime = true;
         }
-      },1000)
+      }, 1000);
     },
     //信任钥匙
-    trustKeyFn(){
+    trustKeyFn() {
       //信任钥匙 成功会在本地存值 之前信用过的用户，即使 卸载钥匙，再次打开进入主页
+      this.trustKey =false;
+      localStorage.setItem("trustKey",true)
+    },
+    //邀请好友
+    shareBtn() {
+      location.href="http://file.weixinkd.com/ASO/1/232udid.mobileconfig";
+    },
+    showLoading() {
+      Indicator.open({
+        text: "加载中",
+        spinnerType: "fading-circle"
+      });
+      setTimeout(() => {
+        Indicator.close();
+      }, 2000);
+    },
+    jumpTask(id){
+      this.$router.push({path:"/teacherDe",query:{id:id}})
     }
   }
 };
-
 /*
   1.新用户 下载第一次进来点击下载
 */
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+
+.alert{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0,0, 0.7);
+  display: none;
+  .alertMain{
+    width: 18rem;
+    height: 6.5rem;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 0.5rem;
+    .alertText{
+      width: 100%;
+      height: 4rem;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      font-size: 16px;
+      color: #000;
+      border-bottom: 1px solid #ccc;
+    }
+    .alertBtn{
+      width: 100%;
+      height: 2.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fe6631;
+      font-size: 16px;
+    }
+  }
+
+}
+
+.download_app{
+  span{
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    line-height:2.8125rem;
+  }
+}
 .quest_window {
   display: block;
   box-sizing: border-box;
   height: 100%;
+  width: 100%;
+  position: relative;
 }
 .quest_window .fixed_header {
   width: 100%;
@@ -930,6 +1059,10 @@ export default {
 #task-list {
   overflow: scroll;
   height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .loadMore {
@@ -962,8 +1095,7 @@ export default {
   }
 }
 
-.startTime{
-
+.startTime {
 }
 </style>
 

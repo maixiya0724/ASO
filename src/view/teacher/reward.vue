@@ -17,15 +17,19 @@
       infinite-scroll-distance="10"
     >
       <div class="list">
-          <div class="item rowFlex columnCenter">
+          <div class="item rowFlex columnCenter" v-for="(item,index) in listData" :key="index">
             <div class="itemLeft">
-                <div class="itemLeftText">试玩斗牛发发放大法法发</div>
-                <div class="timer">2018-02-14 14:05:28</div>
+                <div class="itemLeftText">{{item.text}}</div>
+                <div class="timer">{{item.time}}</div>
             </div>
-            <div class="itemRight">+0.03元</div>
+            <div class="itemRight">{{item.money}}元</div>
           </div>
       </div>
       <p class="timeInfo">仅显示最近三个月的记录</p>
+       <div class="loadMore" v-if="loadMoreData">
+        <div class="loadImage"></div>
+        <span>加载中</span>
+      </div>
     </div>
   </div>
 </template>
@@ -34,21 +38,74 @@
 import { InfiniteScroll } from "mint-ui";
 import Vue from "vue";
 
+import $http from "../../tool/url.js";
+
+
 export default {
   data() {
-    return {};
+    return {
+      listData:[{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"},{text:"试玩斗牛",time:"2018-02-14 14:20:20",money:"0.3"}],
+       loadMoreData:false,
+    };
+  },
+  mounted(){
+    this.fowardList()
   },
   methods: {
     // 加载更多
     loadMore() { 
       this.loading = true;
-      
-      
-    }
+      this.loadMoreData =true;
+    },
+    // 徒弟奖励明细
+
+     async fowardList(){
+      return $http.post("/WebApi/User/getInviteRewardInfo",{page:1}).then((res)=>{
+        if(res.data.status=="1"){
+            this.rewardList= res.data.data.list
+        }else{
+          Toast({
+            message: "请求列表失败",
+            position: "center",
+            duration: 2000
+          });
+        }
+      })
+    },
+    
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
+.loadMore {
+  width: 100%;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.3rem;
+  .loadImage {
+    width: 1.5rem;
+    height: 1.5rem;
+    background: url("../../assets/img/loading.png");
+    background-size: 100% 100%;
+    animation: load 0.6s infinite linear;
+    margin-right: 0.3rem;
+  }
+  span {
+    font-size: 16px;
+    color: #bfbfbf;
+  }
+}
+@keyframes load {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .header{
   width: 100%;
   height: 0.9*3.125rem;
@@ -82,17 +139,19 @@ export default {
   width: 100%;
   height: 100%;
   background: #eee;
-  overflow:hidden;
 }
 .main {
   width: 100%;
-  height: auto;
+  height: 93%;
+  overflow: hidden;
+  overflow-y: scroll;
+  background: #eee;
 }
 .list {
   background: #fff;
     .item{
       width: 100%;
-      height: 1*3.125rem;
+      height: 1.1*3.125rem;
       background: #fff;
       border-top: 1px solid #eee;
       .itemLeft{

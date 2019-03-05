@@ -1,5 +1,5 @@
 <template>
-    <div class="wx_binding">
+    <div class="wx_binding" style="overflow:hidden;">
         <header class="header">
             <a class="size_btn" href="javascript:history.back(-1)">
                 <img width="100%" src="https://mirror.erbicun.cn/2018/images/task_details_btn_left_arrow.png">

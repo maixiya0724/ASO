@@ -7,7 +7,7 @@
     <div class="userInfo">
       <div class="userInfoLeft">
         <p class="money">
-          <span>{{userInfo.balance}}</span>元
+          <span>{{userInfo.total_score}}</span>元
         </p>
         <div class="infoText">
           <span>账户余额</span>
@@ -15,22 +15,24 @@
         </div>
       </div>
       <div class="userInfoRight">
-        <div class="userImg"></div>
+        <div class="userImg">
+          <img :src="userInfo.avatar" alt="">
+        </div>
         <div class="centerText" @click="goCenter">个人中心</div>
       </div>
     </div>
     <div class="getInfo">
       <div class="getInfoItem">
         <div class="infoText">累计收益(元)</div>
-        <div class="infoNum">{{userInfo.total}}</div>
+        <div class="infoNum">{{userInfo.total_score}}</div>
       </div>
       <div class="getInfoItem">
         <div class="infoText">今日收入(元)</div>
-        <div class="infoNum">{{userInfo.todayMoney}}</div>
+        <div class="infoNum">{{userInfo.today_score}}</div>
       </div>
       <div class="getInfoItem">
         <div class="infoText">累计收徒(元)</div>
-        <div class="infoNum">{{userInfo.todayTu}}</div>
+        <div class="infoNum">{{userInfo.invite_money}}</div>
       </div>
     </div>
     <div class="notice" >
@@ -88,16 +90,16 @@
         <img src="../assets/img/guideThree.png" alt="">
       </div>
     </div>
-    <div class="layer" style="display:none;">
-            <div class="signDevive" >
+    <div class="layer" v-if="validate" @click="closeLayer">
+            <div class="signDevive" v-if="validateTwo">
                 <div class="signDeviveText">验证设备后才能正常进行任务哦</div>
                 <div class="btns">
                     <div class="signDeviveBtn">取消</div>
                     <div class="signDeviveBtn">验证</div>
                 </div>
             </div>
-
-            <div class="signDevive" style="display:none;">
+            
+            <div class="signDevive" >
                 <div class="signDeviveText">请验证设备,避免影响您做任务哦</div>
                 <div class="btns">
                     <div class="signDeviveBtn">取消</div>
@@ -108,7 +110,8 @@
   </div>
 </template>
 <script>
-import httpUrl from "../tool/url.js";
+import $http from "../tool/url.js";
+import Axios from 'axios';
 
 export default {
   data() {
@@ -118,16 +121,18 @@ export default {
       guideTwo:false,
       guideThree:false,
       noticeText:"恭喜您完成了专属任务",
-      userInfo:{
-        balance:6.0,
-        total:10,
-        todayMoney:1.00,
-        todayTu:3
-      },
+      userInfo:{},
+      params: this.$route.query,
+      validate:false,
+      validateTwo:false,//二次验证
     };
   },
   mounted() {
     this.notice()
+    this.getUserInfo()
+    // 检查设备是否验证
+    this.setUDID() 
+    
   },
   methods: {
     cheackGuide(){
@@ -139,6 +144,7 @@ export default {
         this.guideLayer = true;
       }
     },
+    
     guideOneFn(){// 点击事件
       this.guideOne=false;
       this.guideTwo=true;
@@ -153,7 +159,7 @@ export default {
       this.$router.push({path:"/",query:{}})
     },
     goDomeplay(){
-      this.$router.push({path:"/domeplay",query:{}})
+      this.$router.push({path:"/mainlist",query:{}})
     },
     goCenter(){
       this.$router.push({path:"/center",query:{}})
@@ -178,7 +184,64 @@ export default {
           left = 280
         }
       },60);
+    },
+    async getUserInfo(){
+      return $http.post("/WebApi/User/getUserInfo",{uid:1232}).then((res)=>{
+        if(res.data.status=="1"){
+          this.userInfo = res.data.data;
+        }else{
+          console.log("请求用户数据失败")
+        }
+      })
+    },
+    setUDID(){
+      let UDID =localStorage.getItem("UDID")
+      // 验证设备完成
+      if(this.params.UDID){
+        localStorage.setItem("UDID",this.params.UDID)
+        //绑定UDID
+        this.bindUDI(this.params.UDID)
+        console.log(1)
+        // 之前验证过设备
+      }else if(UDID){
+        this.validate =false;
+        //没有验证过设备
+        console.log(2)
+      }else{
+        this.validate = true;
+        console.log(3)
+      }
+    },
+    async bindUDI(UDID){
+      return  $http.post("/WebApi/Udid/bindUdid",{UDID:UDID}).then((res)=>{
+          console.log(res)
+      })
+    },
+    closeLayer(){
+      this.validate=false;
+    },
+    // 去验证设备
+    goSetDev(){
+      location.href=""
+    },
+    //进入详情页面
+    jumpDetails(id){
+      console.log(id)
+      return false;
+      this.$router.push({path:"/teacherDe",query:{taskId:id}})
+    },
+
+    // 第一次打开储存 token和uid 等登录信息
+    
+    storageUserInfo(){
+      //储存用户信息
+      if(this.params.uid && this.params.token){
+        localStorage.setItem("uid",this.params.uid)
+        localStorage.setItem("token",this.params.token)
+      }
     }
+   
+    
   }
 };
 </script>
@@ -347,7 +410,7 @@ export default {
     margin: 0 auto;
     margin-top: 0.25*3.125rem;
     background: red;
-
+    display: none;
   }
   .taskList{
     width: 100%;
@@ -477,6 +540,7 @@ export default {
   transform: translate(-50%, -50%);
   border-radius: 0.2*3.125rem;
   overflow: hidden;
+  z-index: 100;
   .signDeviveText {
     font-size: 16px;
     color: #000;

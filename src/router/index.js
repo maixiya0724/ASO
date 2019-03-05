@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Home from "../view/home.vue"
 import DomePlayList from "../view/list.vue"
 import Record from "../view/center/record.vue"
@@ -8,7 +7,7 @@ import DomePlay from "../view/domeplay/dpDetails.vue"
 import LoginOut from "../view/loginOut.vue"
 import Center from "../view/center/center.vue"
 import Sign from "../view/sign.vue"
-import Teacher from "../view/center/teacher.vue"
+import Teacher from "../view/teacher/teacher.vue"
 import cashDe from "../view/center/cash/cashDetails.vue"
 import Problem from "../view/center/problem.vue"
 import BindPhone from "../view/center/bindPhone.vue"
@@ -20,8 +19,7 @@ import Cash from "../view/center/cash/cash.vue"
 import CashZfb from "../view/center/cash/cashZfb.vue"
 import CashWx from "../view/center/cash/cashWx.vue"
 import BindWx from "../view/center/bindWx.vue"
-
-
+import WxQr from "../view/center/wxQr.vue"
 
 Vue.use(Router)
 export default new Router({
@@ -121,6 +119,11 @@ export default new Router({
       path:'/bindwx',
       name:'bindwx',
       component:BindWx,
+    },
+    {
+      path:'/wxQr',
+      name:'wxQr',
+      component:WxQr,
     }
   ]
 })

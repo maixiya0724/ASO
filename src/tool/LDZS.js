@@ -35,10 +35,10 @@ export default {
     );
   },
 
-  downTime: function getEndTime(endTime) {
+  downTime: function getEndTime(startTime,endTime) {
     // 参数为秒
-    var endDate = endTime * 1000; //结束时间，需传入时间参数
-    var t = endDate //时间差的毫秒数
+    
+    var t = endTime-startTime //时间差的毫秒数
     var d = 0,
       h = 0,
       m = 0,

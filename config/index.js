@@ -19,10 +19,11 @@ module.exports = {
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-    proxy: {
+    proxyTable: {
       "/api": {
-          target: "http://api.xiaojushiwan.com/",
+          target: "http://aso.baertt.com/",
           secure: false,
+          changeOrigin: true,//开启跨域
           pathRewrite: {
               "^/api": ""
           }

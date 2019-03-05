@@ -54,8 +54,25 @@
             <div class="itemTime">提现失败</div>
           </div>
         </div>
+        <div class="itemList">
+          <div class="item rowFlex columnCenter">
+            <div class="itemImg">
+              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
+            </div>
+            <div class="itemText">
+              <p class="money">+1元</p>
+              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
+            </div>
+            <div class="itemTime">提现失败</div>
+          </div>
+        </div>
+        
       </div>
       <p class="timeInfo">仅显示最近三个月的记录</p>
+      <div class="loadMore" v-if="loadMoreData">
+        <div class="loadImage"></div>
+        <span>加载中</span>
+      </div>
     </div>
   </div>
 </template>
@@ -66,17 +83,50 @@ import Vue from "vue";
 
 export default {
   data() {
-    return {};
+    return {
+      loadMoreData:false,
+    };
   },
   methods: {
     // 加载更多
     loadMore() { 
       this.loading = true;
+      this.loadMoreData=true;
+      console.log(1)
     }
   }
 };
 </script>
 <style lang="less">
+.loadMore {
+  width: 100%;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.3rem;
+  .loadImage {
+    width: 1.5rem;
+    height: 1.5rem;
+    background: url("../../../assets/img/loading.png");
+    background-size: 100% 100%;
+    animation: load 0.6s infinite linear;
+    margin-right: 0.3rem;
+  }
+  span {
+    font-size: 16px;
+    color: #bfbfbf;
+  }
+}
+
+@keyframes load {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .header{
   width: 100%;
@@ -111,11 +161,12 @@ export default {
   width: 100%;
   height: 100%;
   background: #eee;
-  overflow:hidden;
 }
 .main {
   width: 100%;
-  height: auto;
+  height: 92%;
+  overflow:scroll;
+  background: red;
 }
 .list {
   background: #fff;

@@ -1,67 +1,204 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<style>
-		pre {font-size: 5px; height: 120px;}
-	</style>
-	<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-	<script type="text/javascript">
-	$(function() {
-		window.WebSocket = window.WebSocket || window.MozWebSocket;
-
-		var websocket = new WebSocket('ws://172.16.7.46:9000',
-			'echo-protocol');
-
-		websocket.onopen = function () {
-			console.log("socket opened");
-			$('h2').css('color', 'green');
-		};
-
-		websocket.onerror = function () {
-			$('h2').css('color', 'red');
-		};
-
-		websocket.onmessage = function (message) {
-			console.log(message.data);
-			var messageContent = JSON.parse(message.data);
-			switch(messageContent.messageType) {
-				case 'clear':
-					$('pre').empty();
-					break;
-				case 'appendLine':
-					$('pre').append(messageContent.text + "\n");
-					break;
-				case 'echo':
-					$('p').text(messageContent.text);
-					break;
-				default:
-					break;
-			}
-		};
-
-		$('button').click(function(e) {
-			e.preventDefault();
-			websocket.send(JSON.stringify({
-				'messageType': 'echo',
-				'text': $('input').val()
-			}));
-		});
-	});
-	</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone = no"/>
+    <title>秒来大钱</title>
+    <link rel="stylesheet" href="https://mirror.erbicun.cn/2018/css/common.css?v=1551410759">
+                <link href="https://mirror.erbicun.cn/2018/css/style.css?v=1551410759" rel="stylesheet" type="text/css"/>
+    <script src="//lib.sinaapp.com/js/zepto/1.0/zepto.min.js"></script>
 </head>
+<body ><style>
+    html {
+        background: #F2F1F8;
+    }
+</style>
+<div class="quest_window">
+    <header class="fixed_header">
+        <div class="header">
+            <a href="javascript:history.back();" class="width1"><img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png"></a>
+            <span>限时任务</span>
+            <a href="javascript:location.reload();" class="width1"><img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png"></a>
+        </div>
+
+        <div class="header_step">
+            <img src="https://mirror.erbicun.cn/2018/images/task_list_top_strategy.png">
+        </div>
+    </header>
+    <div class="content top_strategy" id="task-list">
+        <div class="current_tasks" id="current-task-box">
+                <div class="list list1 list_padding1 ">
+                    <input class="task_id" type="hidden" value="37b2b1d19a2e1a6a83415d01fbf0f7a60140c282418143c1534908471d1913d3" readonly>
+                    <input class="app_id" type="hidden" value="afd374e7b5863129030380834745203b0042c201c2824243d24a0a461cda5212" readonly>
+                    <div class="left_img1"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple123/v4/8c/4f/0a/8c4f0a8d-e419-7195-c8b1-33e60715dc1a/source/100x100bb.jpg" class="left_img" onload="minifyImg(this)"></div>
+                    <div class="flex1 task-info" data-restnum='13'
+                         data-message=''>
+                        <p class="app_title">小桔车服
+                            
+                            
+                        </p>
+                                <p>剩余13份</p>
+                    </div>
+                    <div class="red red2 now_get">
+                        <div class="font1">
+                            +<span class="font2">0.9</span>元
+                        </div>
+                        <div class="now_get_btn">立即领取</div>
+                    </div>
+                </div>
+                <div class="list list1 list_padding1 ">
+                    <input class="task_id" type="hidden" value="a453b18f57b5e0e10300dfc3baf3977b42404380820080839249cb445e185012" readonly>
+                    <input class="app_id" type="hidden" value="b73d3aa5138f5229c0828243e2c0820f8143c0008001c0c193c8c9479e19d112" readonly>
+                    <div class="left_img1"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple114/v4/7e/b2/02/7eb202bc-25e2-9c49-bf2c-71f9f28134b6/source/100x100bb.jpg" class="left_img" onload="minifyImg(this)"></div>
+                    <div class="flex1 task-info" data-restnum='1116'
+                         data-message=''>
+                        <p class="app_title">招聘app
+                            
+                            
+                        </p>
+                                <p>剩余1116份</p>
+                    </div>
+                    <div class="red red2 now_get">
+                        <div class="font1">
+                            +<span class="font2">0.9</span>元
+                        </div>
+                        <div class="now_get_btn">立即领取</div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="future_tasks scrollWindow" id="future-task-box" data-template="future-template" data-page="0" data-url="/ios/api/task/forecast?type=1">
+
+        </div>
+
+        <div class="finished_tasks">
+        </div>
+        <p class="want_to_make">想赚更多？邀请好友，轻松赚11元分成</p>
+        <div class="footer_btn">
+            <button class="btn1" id="invite_friend">邀请好友</button>
+        </div>
+    </div>
 
 
-<body>
-	<h2>WebSockets echo client with push support</h2>
-	<form>
-		<input type="text" placeholder="message to be echoed"/>
-		<button>Send</button>
-	</form>
-	<h4>Echo result :</h4>
-	<p></p>
-	<h4>Pushed messages :</h4>
-	<pre></pre>
+    <div class="keyBox" id="launch_key" style="display: none">
+        <div class="dialog_flex"></div>
+        <div class="dialog_flex1">
+           <div class="not_open_key">
+               <img src="https://mirror.erbicun.cn/2018/images/about_me_logo.png">
+               <p>秒赚钥匙未开启</p>
+               <p>未开启秒赚钥匙，无法保障收益到账</p>
+               <div class="key_button goto_link" data-link="bmyaoshi://">启动钥匙</div>
+               <p>如遇问题， <span class="download_app">请重新下载秒赚钥匙</span></p>
+           </div>
+        </div>
+    </div>
+
+    <div class="keyBox" style="display: none" id="download_key">
+        <div class="dialog_flex"></div>
+        <div class="dialog_flex1">
+           <div class="helper_key">
+               <p>请下载任务助手秒赚钥匙<span>8.6.4</span></p>
+               <p>任务期间需开启秒赚钥匙</p>
+               <img src="https://mirror.erbicun.cn/2018/images/about_me_logo.png">
+               <button class="download_app">立即下载</button>
+               
+               <p>每个人的助手可能不同</p>
+               <img src="https://mirror.erbicun.cn/2018/images/toast_btn_close.png" class="close_btn">
+           </div>
+        </div>
+    </div>
+
+    <div class="keyBox" style="display: none" id="trust_key">
+        <div class="dialog_flex"></div>
+        <div class="dialog_flex1">
+            <div class="trust_key">
+                <h2>设置信任秒赚钥匙</h2>
+                <div class="trust_key_wrap">
+                    <div class="step_num">
+                        <div>1</div>
+                        <div></div>
+                        <div>2</div>
+                        <div></div>
+                        <div>3</div>
+                        <div></div>
+                        <div>4</div>
+                    </div>
+                    <div class="step_content">
+                        <p>安装完成后，点击“信任秒赚钥匙”</p>
+                        <p>无法跳转，请打开 设置>通用>设备管理</p>
+                        <p>信任“<span>Weihai Jin Wei Network...</span>”</p>
+                        <p>点击“打开秒赚钥匙”</p>
+                        <p>打开失败，请返回桌面手动打开</p>
+                        <p>如安装失败，请卸载老钥匙后重试</p>
+                    </div>
+                </div>
+                <button class="trust_app">信任秒赚钥匙 <span class="time">5s</span></button>
+                <button class="launch_app open_key_button">打开秒赚钥匙</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<script>
+    var isIos11 = 0;
+    var isIos12 = 0;
+    var isValidAct =  0;
+    var bindCurrentMdm = 1;
+    var verifyId = "2007683191";
+    var emptyList = 0;
+    var bm_config = {
+        ws: 'wss://ws.miaozhuandaqian.com:8976/mi',
+        tk: '10',
+        sm : 'bmyaoshi://'
+    };
+    var iosApp = {
+        isOnlineApp : 0,
+        scheme : 'bmyaoshi://',
+        version : '8.6.4',
+        cert_name : 'Weihai Jin Wei Network...'
+    };
+    function minifyImg(that) {
+        $(that).addClass("MZ-blur");
+    }
+</script>
+<script src="https://mirror.erbicun.cn/2018/js/base.js?v=1551410859"></script>
+<script src="https://mirror.erbicun.cn/2018/js/bridge.js?v=1551410859"></script>
+<script src="https://mirror.erbicun.cn/2018/js/handlebars.min.js"></script>
+<script src="https://mirror.erbicun.cn/2018/js/task_list.js?v=1551410859"></script>
+<script src="https://mirror.erbicun.cn/2018/js/scrollTool.js?v=1551410859"></script>
+<script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+
+<script src="https://mirror.erbicun.cn/2018/js/fastclick.min.js"></script>
+<script>
+    //动态适配
+    (function (doc, win) {
+        var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = 16 * (clientWidth / 375) + 'px';
+                };
+        if (!doc.addEventListener) return;
+        win.addEventListener(resizeEvt, recalc, false);
+        doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        FastClick.attach(document.body);
+    });
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?6de7a5bf2a73f328d02455cc5727aba6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
 </body>
 </html>
