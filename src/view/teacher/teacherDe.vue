@@ -3,11 +3,11 @@
   <div class="record " >
       <div class="header">
         <a class="goBack" href="javascript:history.back(-1)">
-          <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png" alt="">
+          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_left_arrow.png" alt="">
         </a>
         <div class="headerTitle">收徒明细</div>
         <div class="resize">
-          <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png" alt="">
+          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_refresh.png" alt="">
         </div>
       </div>
       <!-- tablist -->
@@ -27,7 +27,7 @@
         <p class="tc_time">2019-02-14</p>
 
         <div class="itemList" v-for="(item,index) in inviteList" :key="index">
-          <div class="item rowFlex columnCenter">
+          <div class="item rowFlex columnCenter" @click="goWardList">
             <div class="itemImg">
               <img :src="item.avatar" alt="">
             </div>
@@ -105,7 +105,6 @@ export default {
       console.log(1)
       this.loading = true;
       this.loadMoreData = true;
-      
     },
     // 现在没有uid
    async inviteRecord(){
@@ -138,7 +137,7 @@ export default {
     goWardList(){
       this.$router.push({path:"/reward",query:{uid:"2"}})
     },
-    
+
 
   }
 };

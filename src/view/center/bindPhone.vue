@@ -16,7 +16,7 @@
         </div>
       </header>
       <!--已绑定手机但可修改-->
-      <div class="bm_content">
+      <div class="bm_content" v-if="!bindPhone">
         <p class="current_mobile">
           当前手机号：
           <span>18519762816</span>
@@ -27,24 +27,26 @@
         </div>
       </div>
       <!--未绑定手机-->
-      <div class="bindPhone">
+      <div class="bindPhone" v-if="bindPhone">
         <div class="inputList">
           <div class="inputItem" style="border-bottom:1px solid #d2cece;">
-            <input class="text" type="text" placeholder="请输入手机号">
-            <div class="btn">获取语音验证码</div>
+            <input class="text" type="text"  placeholder="请输入手机号" v-model.trim="phone">
+            <div class="btn" v-if="show" @click="getCode">获取语音验证码</div>
+            <div class="btn code" v-if="!show">剩余{{count}}秒</div>
+
           </div>
           <div class="inputItem">
-            <input class="text" type="text" placeholder="请输入验证码">
+            <input class="text" type="text" v-model.trim="code" placeholder="请输入验证码">
           </div>
         </div>
         <div class="footer_btn">
-          <button class="no_modification" id="confirm_bind">当前不可修改</button>
+          <button id="confirm_bind" @click="launchCash">绑定手机号</button>
           <p class="anew_bindingTwo">温馨提示:每个月只能绑定一次手机号</p>
         </div>
       </div>
     </div>
     <!-- 绑定手机号 -->
-    <div class="alert">
+    <div class="alert" style="display:none;">
         <div class="alertMain">
           <div class="alertText">请注意接收来电</div>
           <div class="alertBtn">确定</div>
@@ -54,15 +56,80 @@
 </template>
 
 <script>
+import { Toast } from "mint-ui";
+
 export default {
   data() {
-    return {};
+    return {
+      bindPhone:true,
+      phone:"",
+      code:"",
+      show: true,
+      count: '',
+      timer: null,
+    };
   },
   mounted() {},
-  methods: {}
+  methods: {
+    checkPhone() {
+      var TEL_REGEXP = /(?:^1[3456789]|^9[28])\d{9}$/;
+      if (TEL_REGEXP.test(this.phone)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    // 发起提现
+    launchCash() {
+      if (!this.checkPhone()) {
+        Toast({
+          message: "请输入正确的手机号",
+          position: "center",
+          duration: "2000"
+        });
+        return false;
+      }
+      if (this.code == "") {
+        Toast({
+          message: "请输入验证码",
+          position: "center",
+          duration: "2000"
+        });
+        return false;
+      }
+      
+      // 发起提现请求
+      let param = {
+          phone:this.bindPhone,
+          name:this.bindName,
+          uid:""
+      }
+    },
+    getCode(){
+     const TIME_COUNT = 60;
+     if (!this.timer) {
+       this.count = TIME_COUNT;
+       this.show = false;
+       this.timer = setInterval(() => {
+       if (this.count > 0 && this.count <= TIME_COUNT) {
+         this.count--;
+        } else {
+         this.show = true;
+         clearInterval(this.timer);
+         this.timer = null;
+        }
+       }, 1000)
+      }
+   }
+  }
 };
 </script>
 <style lang="less">
+.code{
+  opacity: 0.5;
+  text-align: center;
+  font-size: 18px;
+}
 .alert{
   width: 100%;
   height: 100%;
@@ -125,16 +192,16 @@ export default {
         width: 12rem;
         height: 2.65rem;
         line-height: 2.7rem;
-        font-size: 12px;
+        font-size: 14px;
         text-indent: 0.5rem;
         float: left;
       }
       .btn {
         float: right;
-        width: 7.8rem;
+        width: 8rem;
         height: 2.7rem;
         color: #fe6631;
-        font-size: 12px;
+        font-size: 14px;
         line-height: 1.5rem;
       }
     }

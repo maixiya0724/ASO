@@ -10,7 +10,7 @@
         </header>
         <div class="wc_main">
             <p class="money_title">余额 （元）</p> 
-            <div class="money_num">8.58</div>
+            <div class="money_num">{{params.total}}</div>
             <div class="notice clearfix">
                 <i class="marquee_text_ico fl"><img src="https://mirror.erbicun.cn/2018/images/cash_center_icon_notice.png"></i>
                 <div class="padding_r1">
@@ -56,15 +56,15 @@
 
 
     <!--重新绑定微信提示弹窗-->
-    <div class="wc_bg" id="bind_wx_withdrawal" style="display:none;">
+    <div class="wc_bg" id="bind_wx_withdrawal" v-if="bindWx">
         <div class="wc_prompt">
             <div class="wc_wrap">
                 <p class="wc_title">温馨提示</p>
                 <div class="wc_content">
-                     亲，由于微信提现策略调整</br>
+                     亲，由于微信提现策略调整<br>
                     您需要重新进行微信提现绑定
                 </div>
-                <button class="wc_btn">朕知道了</button>
+                <button class="wc_btn" @click="ISee">朕知道了</button>
             </div>
         </div>
     </div>
@@ -84,17 +84,51 @@
             </div>
         </div>
     </div>
+
     </div>
 </template>
 <script>
+import { Toast } from "mint-ui";
+
 export default {
   data() {
-    return {};
+    return {
+        params:this.$route.query,
+        isInstall:"",
+        websocket:{},
+        openApp: false,
+        bindWx:false,//绑定微信
+
+    };
   },
   mounted() {
     this.notice();
   },
+
   methods: {
+      closeLayer(){
+          this.bindWx=false;
+      },
+     
+    callApp: function() {
+      let IosUrl = "CYRead://bing";
+      location.href = IosUrl;
+    },
+    
+    //验证信息
+    proving(){
+        if(this.params.total>10){
+            Toast({
+                message: "提现失败",
+                position: "center",
+                duration: 2000
+            });
+        }
+    },
+    ISee(){//去绑定微信
+        this.callApp()
+        this.closeLayer()
+    },
     notice(){
       var  notice =this.$refs.notice
       var left =  0;
@@ -108,14 +142,17 @@ export default {
       },60);
     },
     goZfb(){
-        this.$router.push({path:"/cashzfb",query:{}})
+        this.$router.push({path:"/cashzfb",query:{total:this.params.total}})
     },
     goWx(){
-        this.$router.push({path:"/cashwx",query:{}})
+        this.bindWx= true;  
+        return false      
+        this.$router.push({path:"/cashwx",query:{total:this.params.total}})
     },
     cashDe(){
-        this.$router.push({path:"/cashDe",query:{}})
-    }
+        this.$router.push({path:"/cashlist",query:{}})
+    },
+
   }
 };
 </script>

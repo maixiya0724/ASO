@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from "../view/home.vue"
 import DomePlayList from "../view/list.vue"
 import Record from "../view/center/record.vue"
-import DomePlay from "../view/domeplay/dpDetails.vue"
+import DomePlay from "../view/domeplay/domeplay.vue"
 import LoginOut from "../view/loginOut.vue"
 import Center from "../view/center/center.vue"
 import Sign from "../view/sign.vue"

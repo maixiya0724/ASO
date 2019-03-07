@@ -2,14 +2,14 @@
   <!-- 收入明细 -->
   <div class="record">
     <div class="header">
-      <a class="goBack" href="javascript:history.back(-1)">
-        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png" alt="">
-      </a>
-      <div class="headerTitle">收入明细</div>
-      <div class="resize">
-        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png" alt="">
+        <a class="goBack" href="javascript:history.back(-1)">
+          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_left_arrow.png" alt="">
+        </a>
+        <div class="headerTitle">收徒明细</div>
+        <div class="resize">
+          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_refresh.png" alt="">
+        </div>
       </div>
-    </div>
     <div
       class="main"
       v-infinite-scroll="loadMore"

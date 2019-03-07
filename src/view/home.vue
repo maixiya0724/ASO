@@ -103,7 +103,7 @@
                 <div class="signDeviveText">请验证设备,避免影响您做任务哦</div>
                 <div class="btns">
                     <div class="signDeviveBtn">取消</div>
-                    <div class="signDeviveBtn">验证</div>
+                    <div class="signDeviveBtn" @click="signDevice">验证</div>
                 </div>
             </div>
         </div>
@@ -112,6 +112,7 @@
 <script>
 import $http from "../tool/url.js";
 import Axios from 'axios';
+import { Indicator } from "mint-ui";
 
 export default {
   data() {
@@ -132,9 +133,41 @@ export default {
     this.getUserInfo()
     // 检查设备是否验证
     this.setUDID() 
+    /*
+
+    如果用户之前信任过，点击应该直接进入首页，在首页判断，用户是否安装app 如果未安装，在任务详情里面进行之前的操作
+     */
     
   },
   methods: {
+    // 验证设备
+    signDevice(){
+      location.href="https://res.youth.cn/ASO/getUDID.mobileconfig";
+    },
+    hybridApp() {
+      let that = this;
+      window.WebSocket = window.WebSocket || window.MozWebSocket;
+      this.websocket = new WebSocket(
+        "ws://127.0.0.1:9000",
+        "echo-protocol"
+      );
+      Indicator.open({
+        text: "正在链接钥匙"
+      });
+      setTimeout(()=>{
+        Indicator.close();
+      })
+      this.websocket.onopen = function() {
+        //连接客户端触发的函数
+        console.log("打开成功");
+      };
+      this.websocket.onerror = function() {
+        //链接失败就打开重新下载的弹窗
+        console.log("链接失败");
+      //that.openKey = true;
+      };
+    },
+
     cheackGuide(){
       if(localStorage.getItem("guide")){
         this.guideOne = false;
@@ -165,7 +198,7 @@ export default {
       this.$router.push({path:"/center",query:{}})
     },
     goCash(){
-      this.$router.push({path:"/cash",query:{}})
+      this.$router.push({path:"/cash",query:{total:this.userInfo.total_score}})
     },
     goTeacher(){
       this.$router.push({path:"/teacher",query:{}})
@@ -194,26 +227,24 @@ export default {
         }
       })
     },
+    //验证设备
     setUDID(){
       let UDID =localStorage.getItem("UDID")
       // 验证设备完成
       if(this.params.UDID){
         localStorage.setItem("UDID",this.params.UDID)
         //绑定UDID
-        this.bindUDI(this.params.UDID)
-        console.log(1)
+        this.bindUDID(this.params.UDID)
         // 之前验证过设备
       }else if(UDID){
         this.validate =false;
         //没有验证过设备
-        console.log(2)
       }else{
         this.validate = true;
-        console.log(3)
       }
     },
-    async bindUDI(UDID){
-      return  $http.post("/WebApi/Udid/bindUdid",{UDID:UDID}).then((res)=>{
+    async bindUDID(UDID){
+      return  $http.post("/WebApi/Udid/bindUdid",{UDID:UDID,UID:localStorage.getItem("uid")}).then((res)=>{
           console.log(res)
       })
     },
@@ -239,6 +270,7 @@ export default {
         localStorage.setItem("uid",this.params.uid)
         localStorage.setItem("token",this.params.token)
       }
+      
     }
    
     
@@ -248,6 +280,47 @@ export default {
 <style lang="less" >
 
 //@px*3.125rem:3.125
+
+.alert{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0,0, 0.7);
+  display: none;
+  .alertMain{
+    width: 18rem;
+    height: 6.5rem;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 0.5rem;
+    .alertText{
+      width: 100%;
+      height: 4rem;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      font-size: 16px;
+      color: #000;
+      border-bottom: 1px solid #ccc;
+    }
+    .alertBtn{
+      width: 100%;
+      height: 2.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fe6631;
+      font-size: 16px;
+    }
+  }
+
+}
 
 #home {
   width: 100%;

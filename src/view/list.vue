@@ -25,7 +25,7 @@
           class="list list1 list_padding1"
           v-for="(item,index) in adListData"
           :key="index"
-          
+          @click="openDownkey"
         >
           <input
             class="task_id"
@@ -37,7 +37,7 @@
           <div class="left_img1 MZ-blur">
             <img :src="item.thumb" class="left_img">
           </div>
-          <div class="flex1 task-info" data-restnum="27" data-message="" @click="callAppAction">
+          <div class="flex1 task-info" data-restnum="27" data-message="">
             <p class="app_title">
               {{item.app_name}}
               <i class="three_kinds_red border2">付费</i>
@@ -201,7 +201,7 @@ export default {
     },2000)
   },
   destroyed(){
-    this.websocket.close()
+    //this.websocket.close()
   },
   methods: {
     async adList() {
@@ -272,8 +272,12 @@ export default {
     },
     // 去下载钥匙
     openDownkey() {
-      if(localStorage.getItem("trustKey")){ 
-        this.openKey=false;
+      // 之前信任过
+      if(localStorage.getItem("trustKey")){
+
+        this.openKey=true;
+
+      // 为信任过
       }else{
         this.downApp = true;
       }
@@ -284,7 +288,7 @@ export default {
          localStorage.setItem("token",this.params.token)
          localStorage.setItem("token_id",this.params.token_id)
         //已登录
-       // this.$router.push({name:"home",params:this.params})
+        this.$router.push({name:"home",params:this.params})
       }
     },
     // 调取原生app
@@ -319,35 +323,29 @@ export default {
       //that.openKey = true;
       };
     },
-    // 打开app
+    // 打开app 如果未打开 实现跳转
     callAppAction: function() {
-      alert(this.websocket.readyState)
-      
-      if(this.websocket.readyState!="1"){
-        console.log("断开连接，调用app")
         this.callApp()
-        return false;
-      }
 
-      let that = this;
-      this.trustKey = false;
-      this.websocket.send(
-        JSON.stringify({
-          action: "isopenApp",
-          appBuddleId: "cn.youth.news"
-        })
-      ); // 发送参数到客户端
+      // let that = this;
+      // this.trustKey = false;
+      // this.websocket.send(
+      //   JSON.stringify({
+      //     action: "isopenApp",
+      //     appBuddleId: "cn.youth.news"
+      //   })
+      // ); // 发送参数到客户端
 
-      this.websocket.onmessage = function(event) {
-        console.log(event.data, "回调");
-        this.isInstall = event.data.install;
-        if (event.data.install == "0") {
-          //未安装
-          that.openKey = true;
-        } else {
-          //已安装 打开app
-        }
-      };
+      // this.websocket.onmessage = function(event) {
+      //   console.log(event.data, "回调");
+      //   this.isInstall = event.data.install;
+      //   if (event.data.install == "0") {
+      //     //未安装
+      //     that.openKey = true;
+      //   } else {
+      //     //已安装 打开app
+      //   }
+      // };
     },
 
     downloadKey() {
@@ -383,12 +381,12 @@ export default {
     //信任钥匙
     trustKeyFn() {
       //信任钥匙 成功会在本地存值 之前信用过的用户，即使 卸载钥匙，再次打开进入主页
-      this.trustKey =false;
+      //this.trustKey =false;
       localStorage.setItem("trustKey",true)
     },
     //邀请好友
     shareBtn() {
-      location.href="http://file.weixinkd.com/ASO/1/232udid.mobileconfig";
+      //location.href="http://file.weixinkd.com/ASO/1/232udid.mobileconfig";
     },
     showLoading() {
       Indicator.open({

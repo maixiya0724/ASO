@@ -229,7 +229,7 @@ export default {
   },
   methods: {
     goCash() {
-      this.$router.push({ path: "/cash", query: {} });
+      this.$router.push({ path: "/cash", query: {total:this.userInfo.total_score} });
     },
     taskDetails() {
       this.$router.push({ path: "/cash", query: {} });

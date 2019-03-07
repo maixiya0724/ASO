@@ -47,7 +47,8 @@
         </div>
         <div
           class="list list1 list_padding1"
-          v-for="(item,index) in myTaskList.doing_list" v-if="index>0"
+          v-for="(item,index) in myTaskList.doing_list"
+          v-if="index>0"
           :key="index"
           @click="goMyTask(item.id)"
         >
@@ -68,12 +69,12 @@
             </div>
           </div>
         </div>
-        <div class="taskAll">以下
+        <div class="taskAll">
+          以下
           <span>63</span>个任务即将开始,总共
           <span>57.28</span>元,准时来抢
         </div>
         <!-- 可接的任务 -->
-
         <div
           class="list list1 list_padding1"
           v-for="(item,index) in myTaskList.not_do_list"
@@ -110,6 +111,103 @@
     <!-- 可接的任务 -->
     <!-- 验证码 -->
     <div id="veCode"></div>
+    <div class="keyBox" id="launch_key" v-if="openKey">
+      <div class="dialog_flex"></div>
+      <div class="dialog_flex1">
+        <div class="not_open_key">
+          <img src="../../assets/img/icon4-75.png">
+          <p>钱多多未开启</p>
+          <p>未开启钱多多，无法保障收益到账</p>
+          <div class="key_button goto_link" data-link="bmyaoshi://" @click="callApp">启动钥匙</div>
+          <p>
+            如遇问题，
+            <span class="download_app" @click="downloadKey">请重新下载钱多多</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="keyBox" id="download_key" v-if="downApp">
+      <div class="dialog_flex"></div>
+      <div class="dialog_flex1">
+        <div class="helper_key">
+          <p>
+            请下载任务助手钱多多
+            <span>8.5.1</span>
+          </p>
+          <p>任务期间需开启钱多多</p>
+          <img src="../../assets/img/icon4-75.png">
+          <button class="download_app" @click="download_app">
+            <span>立即下载</span>
+          </button>
+          <p>每个人的助手可能不同</p>
+          <img
+            src="https://mirror.erbicun.cn/2018/images/toast_btn_close.png"
+            @click="closeDownloadKey"
+            class="close_btn"
+          >
+        </div>
+      </div>
+    </div>
+    <div class="keyBox" v-if="trustKey" id="trust_key">
+      <div class="dialog_flex"></div>
+      <div class="dialog_flex1">
+        <div class="trust_key">
+          <h2>设置信任钱多多</h2>
+          <div class="trust_key_wrap">
+            <div class="step_num">
+              <div>1</div>
+              <div></div>
+              <div>2</div>
+              <div></div>
+              <div>3</div>
+              <div></div>
+              <div>4</div>
+            </div>
+            <div class="step_content">
+              <p>安装完成后，点击“信任钱多多”</p>
+              <p>无法跳转，请打开 设置>通用>设备管理</p>
+              <p>
+                信任“
+                <span>Beijing Chuangyi interact...</span>”
+              </p>
+              <p>点击“打开钱多多”</p>
+              <p>打开失败，请返回桌面手动打开</p>
+              <p>如安装失败，请卸载老钥匙后重试</p>
+            </div>
+          </div>
+          <button class="trust_app" v-if="!downFiveTime">
+            信任钱多多
+            <span class="time">{{fiveTime}}s</span>
+          </button>
+          <button
+            class="trust_app"
+            style="background: #fe6631;color: rgba(255, 255, 255, 0.5);box-shadow: 0 0.25rem 0.5rem 0 rgba(254, 102, 49, 1)"
+            v-if="downFiveTime"
+          >信任钱多多</button>
+          <button class="launch_app open_key_button" @click="callApp">打开钱多多</button>
+        </div>
+      </div>
+    </div>
+    <!-- 弹窗 -->
+    <div class="alert">
+      <div class="alertMain">
+        <div class="alertText">
+          <p>争抢失败,任务已被抢光</p>
+          <p>请您再试试其他任务</p>
+        </div>
+        <div class="alertBtn">确定</div>
+      </div>
+    </div>
+    <!-- 已经领取过 -->
+    <div class="alert">
+      <div class="alertMain">
+        <div class="alertText">
+          <p>您已试用过该APP</p>
+        </div>
+        <div class="alertBtn">确定</div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -120,7 +218,7 @@ import { setTimeout, setInterval, clearInterval } from "timers";
 Vue.use(InfiniteScroll);
 import $http from "../../tool/url.js";
 import { Toast } from "mint-ui";
-import Axios from "axios"
+import Axios from "axios";
 
 // import socketIo from "socket.io"
 // var Io = new socketIo()
@@ -137,7 +235,9 @@ export default {
       adListData: [],
       loadMoreData: false,
       myTaskAll: [],
-      myTaskList:{},
+      myTaskList: {},
+      websocket: {},
+      openKey:false,
     };
   },
   created() {},
@@ -145,12 +245,106 @@ export default {
   mounted() {
     this.onload();
   },
+  destroyed(){
+    this.websocket.close()
+  },
   methods: {
     async onload() {
       this.adList();
       this.veCode();
-      this.myAdList()
+      this.myAdList();
 
+       Indicator.open({
+        text: "连接钥匙中...",
+        spinnerType: "fading-circle"
+      });
+      
+      setTimeout(()=>{
+        this.hybridApp()
+        this.inspect()
+        Indicator.close()
+      },2000)
+    },
+    //打开信任钱多多
+    trustKeyFn(){
+
+    },
+    closeDownloadKey() {
+      this.downApp = false;
+    },
+    // 下载钥匙
+    download_app() {
+      this.downApp = false;
+      this.trustKey = true;
+      // 倒计时去信任
+      clearInterval(timer);
+      var timer = setInterval(() => {
+        this.fiveTime--;
+        if (this.fiveTime <= 0) {
+          clearInterval(timer);
+          this.downFiveTime = true;
+        }
+      }, 1000);
+    },
+    // 下载钥匙
+    downloadKey() {
+      // 下载钥匙应用
+      this.openKey = false;
+      this.trustKey = true;
+      clearInterval(timer);
+      var timer = setInterval(() => {
+        this.fiveTime--;
+        if (this.fiveTime <= 0) {
+          clearInterval(timer);
+          this.downFiveTime = true;
+        }
+      }, 1000);
+    },
+    callApp: function() {
+      let IosUrl = "CYRead://";
+      let url_ios_download = "";
+      let loadTime = new Date();
+      location.href = IosUrl;
+    },
+    //检查是否连接钥匙
+    inspect() {
+      let that = this;
+      this.trustKey = false;
+      
+      // this.websocket.send(
+      //   JSON.stringify({
+      //     action: "isopenApp",
+      //     appBuddleId: "cn.youth.news"
+      //   })
+      // ); // 发送参数到客户端
+
+      // this.websocket.onmessage = function(event) {
+      //   console.log(event.data, "回调");
+      //   this.isInstall = event.data.install;
+      //   if (event.data.install == "0") {
+      //     //未安装
+      //     that.openKey = true;
+      //   } else {
+      //     //已安装 打开app
+      //     this.callApp()
+      //   }
+      // };
+    },
+    //创建本地链接
+    hybridApp() {
+      let that = this;
+      window.WebSocket = window.WebSocket || window.MozWebSocket;
+      this.websocket = new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
+
+      this.websocket.onopen = function() {
+        //连接客户端触发的函数
+        console.log("打开成功");
+      };
+      this.websocket.onerror = function() {
+        //链接失败就打开重新下载的弹窗
+        console.log("链接失败");
+        //that.openKey = true;
+      };
     },
     // 去收徒页面
     goTeacher() {
@@ -163,35 +357,44 @@ export default {
     // 抢任务
     async grubTask() {
       // 抢任务之前先检查任务是否领取过
-      await this.excludeTask()
+      let obj={};
+      return $http.get("/Ad/grabAd/id/3/uid/2").then(res=>{
+        console.log(res)
+      })
+     
+      
+
     },
-    async excludeTask(){
+    // 排重任务
+    async excludeTask() {
       let obj = {
-        ad:"",
-        idfa:"",
-        channel:"",
-        systemversion:"",
-        devicemodel:"",
-        ip:"",
-        udid:"",
-        plan:"",
-      }
-       Indicator.open({
+        ad: "",
+        idfa: "",
+        channel: "",
+        systemversion: "",
+        devicemodel: "",
+        ip: "",
+        udid: "",
+        plan: ""
+      };
+      Indicator.open({
         text: "争抢任务中...",
         spinnerType: "fading-circle"
       });
-      return Axios.get("http://api.xiaojushiwan.com/repetition",obj).then(res=>{
-        console.log(res)
-        // 抢任务
-        Indicator.close();
-        // 抢到任务
-        Toast({
-          message: "成功抢到任务！请在30分钟内完成",
-          position: "center",
-          duration: 2000
-        })
-        // 
-      })
+      return Axios.get("http://api.xiaojushiwan.com/repetition", obj).then(
+        res => {
+          console.log(res);
+          // 抢任务
+          Indicator.close();
+          // 抢到任务
+          Toast({
+            message: "成功抢到任务！请在30分钟内完成",
+            position: "center",
+            duration: 2000
+          });
+          //
+        }
+      );
     },
     // 获取全部列表
     async adList() {
@@ -211,10 +414,9 @@ export default {
 
     async myAdList() {
       return $http.post("/Ad/getUserAdList", { uid: "2" }).then(res => {
-        
-        if(res.data.status=="1"){
+        if (res.data.status == "1") {
           this.myTaskList = res.data.data;
-        }else{
+        } else {
           Toast({
             message: "请求任务列表失败",
             position: "center",

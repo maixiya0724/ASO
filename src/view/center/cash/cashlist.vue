@@ -166,7 +166,6 @@ export default {
   width: 100%;
   height: 92%;
   overflow:scroll;
-  background: red;
 }
 .list {
   background: #fff;
