@@ -4,7 +4,7 @@ export default {
         if(process.env.NODE_ENV=="development"){
             return "/api"
         }else{
-            return ""
+            return "http://aso.baertt.com"
         }
     }
 }

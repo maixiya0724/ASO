@@ -1,5 +1,9 @@
 <template>
-  <div class="teacher">
+<div class="noInfo">
+  敬请期待
+</div>
+
+  <!-- <div class="teacher">
     <div class="header">
       <a href="javascript:history.back(-1)">
         <div class="headerLeft"></div>
@@ -17,21 +21,21 @@
       <div class="mainList">
         <div class="mainListItem">
           <div class="itemImage">
-            <img src="../../assets/img/share_icon.png" alt="">
+            <img src="https://res.youth.cn/ASO/img/share_icon.png" alt="">
           </div>
           <div class="itemText">师傅分享专属链接</div>
         </div>
         <div class="next"></div>
         <div class="mainListItem">
           <div class="itemImage">
-            <img src="../../assets/img/sw_icon.png" alt="">
+            <img src="https://res.youth.cn/ASO/img/sw_icon.png" alt="">
           </div>
           <div class="itemText">师傅分享专属链接</div>
         </div>
         <div class="next"></div>
         <div class="mainListItem">
           <div class="itemImage">
-            <img src="../../assets/img/rw_icon.png" alt="">
+            <img src="https://res.youth.cn/ASO/img/rw_icon.png" alt="">
           </div>
           <div class="itemText">师傅分享专属链接</div>
         </div>
@@ -61,27 +65,26 @@
         <div class="shareList">
           <div class="shareItem">
             <div class="hot">
-              <img src="../../assets/img/hot_icon.png" alt="">
+              <img src="https://res.youth.cn/ASO/img/hot_icon.png" alt="">
             </div>
-            <img class="icon" src="../../assets/img/wx_icon.png" alt="">
+            <img class="icon" src="https://res.youth.cn/ASO/img/wx_icon.png" alt="">
             <div class="shareItemText">微信好友</div>
           </div>
           <div class="shareItem">
-            <img class="icon" src="../../assets/img/ql_icon.png" alt="">
+            <img class="icon" src="https://res.youth.cn/ASO/img/ql_icon.png" alt="">
             <div class="shareItemText">朋友圈</div>
           </div>
           <div class="shareItem" @click="copyLink">
-            <img class="icon" src="../../assets/img/qq_icon.png" alt="">
+            <img class="icon" src="https://res.youth.cn/ASO/img/qq_icon.png" alt="">
             <div class="shareItemText">复制链接</div>
           </div>
           <div class="shareItem" style="width:3.75rem;" @click="qrShwo">
-            <img class="icon" src="../../assets/img/sm_icon.png" alt="">
+            <img class="icon" src="https://res.youth.cn/ASO/img/sm_icon.png" alt="">
             <div class="shareItemText">面对面扫码</div>
           </div>
         </div>
       </div>
     </div>
-    <!-- qr -->
     <div id="qr" v-if="qr" @click="closeLayer">
       <div class="qr" @click.stop>
         <div class="title">我的邀请二维码</div>
@@ -89,7 +92,7 @@
         <div class="qrInfo">扫码加入钱多多，瓜分每天20w现金</div>
       </div>
     </div>
-    <!-- 复制链接弹窗 -->
+    
     <div id="qr" v-show="linkCopy" @click="closeLayer">
       <div class="copyLink" @click.stop>
         <div class="copyLinkMain">
@@ -100,7 +103,7 @@
         <div class="copyBtn" @click="copy" id="copy_keyword" :data-clipboard-text="copyValue">复制链接</div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script>
 import Clipboard from "clipboard";
@@ -182,6 +185,15 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.noInfo{
+  width: 100%;
+  height: 100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-size: 16px;
+}
 #qr {
   width: 100%;
   height: 100%;
@@ -274,7 +286,7 @@ export default {
 .teacher {
   width: 100%;
   height: 100%;
-  background: url("../../assets/img/bg.png");
+  background: url("https://res.youth.cn/ASO/img/bg.png");
   background-size: 100% 100%;
   .header {
     width: 100%;
@@ -285,7 +297,7 @@ export default {
     .headerLeft {
       width: 0.8 * 3.125rem;
       height: 0.88 * 3.125rem;
-      background: url("../../assets/img/back_icon.png");
+      background: url("https://res.youth.cn/ASO/img/back_icon.png");
       background-size: 100% 100%;
     }
     .headerCenter {
@@ -314,14 +326,14 @@ export default {
     margin: 0 auto;
     margin-top: 0.2 * 3.125rem;
     margin-bottom: 0.2 * 3.125rem;
-    background: url("../../assets/img/banner_fonts.png");
+    background: url("https://res.youth.cn/ASO/img/banner_fonts.png");
     background-size: 100% 100%;
   }
   .teacherSubTitle {
     width: 5.1 * 3.125rem;
     height: 0.6 * 3.125rem;
     margin: 0 auto;
-    background: url("../../assets/img/banner_fonts2.png");
+    background: url("https://res.youth.cn/ASO/img/banner_fonts2.png");
     background-size: 100% 100%;
     margin-top: 0.3 * 3.125rem;
     font-size: 0.3 * 3.125rem;
@@ -335,7 +347,7 @@ export default {
     width: 6.8 * 3.125rem;
     height: 7.76 * 3.125rem;
     margin: 0 auto;
-    background: url("../../assets/img/hb_bg.png");
+    background: url("https://res.youth.cn/ASO/img/hb_bg.png");
     background-size: 100% 100%;
     .mainTitle {
       width: 3.4 * 3.125rem;
@@ -348,7 +360,7 @@ export default {
       .mainTitleImg {
         width: 100%;
         height: 0.04 * 3.125rem;
-        background: url("../../assets/img/title_lines.png");
+        background: url("https://res.youth.cn/ASO/img/title_lines.png");
         background-size: 100% 100%;
       }
       p {
@@ -394,7 +406,7 @@ export default {
       .next {
         width: 0.4 * 3.125rem;
         height: 0.2 * 3.125rem;
-        background: url("../../assets/img/next_jt_icon.png");
+        background: url("https://res.youth.cn/ASO/img/next_jt_icon.png");
         background-size: 100% 100%;
         position: relative;
         top: -0.35 * 3.125rem;
@@ -414,7 +426,7 @@ export default {
       .line {
         width: 0.01 * 3.125rem;
         height: 0.87 * 3.125rem;
-        background: url("../../assets/img/line.png");
+        background: url("https://res.youth.cn/ASO/img/line.png");
         background-size: 100% 100%;
       }
       .shareInfoItem {
@@ -443,7 +455,7 @@ export default {
     .shareBtn {
       width: 5.7 * 3.125rem;
       height: 1.45 * 3.125rem;
-      background: url("../../assets/img/tc_button_bg.png");
+      background: url("https://res.youth.cn/ASO/img/tc_button_bg.png");
       background-size: 100% 100%;
       margin: 0 auto;
       margin-top: 0.1 * 3.125rem;

@@ -132,7 +132,6 @@ export default {
   mounted() {
   },
   methods: {
-    
     question:function(e){
         let nextDom = e.currentTarget.getElementsByClassName("answer")[0]
         if(nextDom.style.display=="none"){
@@ -140,16 +139,8 @@ export default {
         }else{
             nextDom.style.display="none"
         }
-       
+    },
 
-        
-
-        
-
-        
-
-
-    }
   }
 };
 </script>

@@ -30,7 +30,7 @@
                     <img src="https://mirror.erbicun.cn/2018/images/home_icon_right_arrow.png">
                 </div>
             </a>
-            <a class="withdrawal_list withdrawal_item" data-type="1" @click="goWx">
+            <!-- <a class="withdrawal_list withdrawal_item" data-type="1" @click="goWx">
                 <div class="wt_left_box">
                     <img src="https://mirror.erbicun.cn/2018/images/cash_center_icon_wechat.png">
                     <span class="wt_alipay">微信提现</span>
@@ -40,7 +40,7 @@
                     
                     <img src="https://mirror.erbicun.cn/2018/images/home_icon_right_arrow.png">
                 </div>
-            </a>
+            </a> -->
             <a class="withdrawal_list wt_margin_top" href="javascript:;" @click="cashDe" data-link="/ios/my/enchashments.html">
                 <div class="wt_left_box">
                     <img src="https://mirror.erbicun.cn/2018/images/cash_center_present_record.png">
@@ -142,15 +142,15 @@ export default {
       },60);
     },
     goZfb(){
-        this.$router.push({path:"/cashzfb",query:{total:this.params.total}})
+        this.$router.push({path:"/cashzfb",query:{total:this.params.total,token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     goWx(){
         this.bindWx= true;  
         return false      
-        this.$router.push({path:"/cashwx",query:{total:this.params.total}})
+        this.$router.push({path:"/cashwx",query:{total:this.params.total,token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     cashDe(){
-        this.$router.push({path:"/cashlist",query:{}})
+        this.$router.push({path:"/cashlist",query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
 
   }

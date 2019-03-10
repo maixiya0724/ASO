@@ -55,7 +55,7 @@
                             :class="zIndex==item.ID?'money_select_list money_select_listActive':'money_select_list '"
                             v-for="(item,index) in cashList"
                             :key="index"
-                            @click="selectIndex(index)"
+                            @click="selectIndex(item.ID)"
                         >
                             <p class="aw_red">{{item.num}}元</p>
                             <p>{{item.info}}</p>
@@ -130,6 +130,7 @@
 </template>
 <script>
 import { Toast } from "mint-ui";
+import $http from "../../../tool/url.js";
 
 export default {
   data() {
@@ -141,21 +142,23 @@ export default {
         { ID: "3", num: "50", info: "返500金币" },
         { ID: "4", num: "100", info: "返1000金币" },
         { ID: "5", num: "500", info: "返5元现金" },
-        { ID: "6", num: "1000", info: "返10元现金" }
       ],
       zIndex: "",
       bindPhone: "",
       bindName: "",
-      params: this.$route.query
+      params: this.$route.query,
+      dataInfo:{},
     };
   },
   mounted() {
-    //
+    this.getZfhInfo()
   },
   methods: {
     //选择提现金额
     selectIndex(index) {
+      console.log(index)
       this.zIndex = index;
+      
     },
     //检测手机号
     checkPhone() {
@@ -168,7 +171,7 @@ export default {
     },
     // 发起提现
     launchCash() {
-      console.log(this.params.total);
+
 
       if (!this.checkPhone()) {
         Toast({
@@ -186,7 +189,10 @@ export default {
         });
         return false;
       }
+        console.log(this.zIndex)
+
       if (this.zIndex == "") {
+
         Toast({
           message: "请选择提现金额",
           position: "center",
@@ -206,10 +212,48 @@ export default {
       // 发起提现请求
       let param = {
           num:this.cashList[this.zIndex].num,
-          phone:this.bindPhone,
-          name:this.bindName,
-          uid:""
+          acount:this.bindPhone,
+          username:this.bindName,
       }
+      
+      this.requestCash()
+
+    },
+    requestCash(){
+      //发起提现
+      $http.post("/WebApi/Alipay/withdraw",{username:this.bindName,acount:this.bindPhone,money:this.cashList[this.zIndex].num}).then(res=>{
+        if(res.data.status=="1"){
+          Toast({
+            message: "提现成功",
+            position: "center",
+            duration: "2000"
+          });
+        }else{
+          Toast({
+            message: res.data.msg,
+            position: "center",
+            duration: "2000"
+          });
+        }
+      })
+    },
+    getZfhInfo(){
+      $http.post("WebApi/alipay/getAlipayInfo").then(res=>{
+        if(res.data.status=="1"){
+            if(res.data.data.alipay){
+              this.bindPhone = res.data.data.alipay
+            }
+            if(res.data.data.name){
+              this.bindPhone = res.data.data.name
+            }
+        }else{
+          Toast({
+            message: res.data.msg,
+            position: "center",
+            duration: "2000"
+          });
+        }
+      })
     }
   }
 };

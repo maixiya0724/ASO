@@ -10,11 +10,13 @@
           <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_refresh.png" alt="">
         </div>
       </div>
+
+      <div class="noData" v-if="!dataList.length>0">暂无数据</div>
     <div
       class="main"
       v-infinite-scroll="loadMore"
       infinite-scroll-disabled="loading"
-      infinite-scroll-distance="10"
+      infinite-scroll-distance="10" v-if="dataList.length>0"
     >
       <div class="list">
         <p class="tc_time">2019-02-14</p>
@@ -30,43 +32,6 @@
             <div class="itemTime">提现失败</div>
           </div>
         </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_refresh.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">提现失败</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">提现失败</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">提现失败</div>
-          </div>
-        </div>
-        
       </div>
       <p class="timeInfo">仅显示最近三个月的记录</p>
       <div class="loadMore" v-if="loadMoreData">
@@ -78,6 +43,8 @@
 </template>
 
 <script>
+import $http from "../../../tool/url.js";
+import { Toast } from "mint-ui";
 import { InfiniteScroll } from "mint-ui";
 import Vue from "vue";
 
@@ -85,7 +52,12 @@ export default {
   data() {
     return {
       loadMoreData:false,
+      dataList:[],
     };
+  },
+  mounted(){
+    this.getRequestList()
+
   },
   methods: {
     // 加载更多
@@ -93,11 +65,32 @@ export default {
       this.loading = true;
       this.loadMoreData=true;
       console.log(1)
-    }
+    },
+    getRequestList(){
+      $http.get("/WebApi/User/getInviteReward",{page:1}).then(res=>{
+        console.log(res)
+        if(res.data.status=="1"){
+          this.dataList= res.data.data
+        }else{
+          Toast({
+              message:res.data.msg,
+              position: "center",
+              duration: 2000
+            });
+        }
+      })
+    },
   }
 };
 </script>
 <style lang="less">
+.noData{
+  width: 100%;
+  height: 2rem;
+  line-height: 2rem;
+  text-align: center;
+  color: #000;
+}
 .loadMore {
   width: 100%;
   height: 2.5rem;
@@ -108,7 +101,7 @@ export default {
   .loadImage {
     width: 1.5rem;
     height: 1.5rem;
-    background: url("../../../assets/img/loading.png");
+    background: url("https://res.youth.cn/ASO/img/loading.png");
     background-size: 100% 100%;
     animation: load 0.6s infinite linear;
     margin-right: 0.3rem;

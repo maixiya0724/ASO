@@ -2,7 +2,7 @@
   <!-- 主页 -->
   <div id="home">
     <div class="homeTop">
-      <img src="../assets/img/top_bg.png" alt="">
+      <img src="https://res.youth.cn/ASO/img/top_bg.png" alt="">
     </div>
     <div class="userInfo">
       <div class="userInfoLeft">
@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="notice" >
-      <img src="../assets/img/news_icon.png" alt="">
+      <img src="https://res.youth.cn/ASO/img/news_icon.png" alt="">
       <div><p ref="notice">{{noticeText}}</p></div>
     </div>
     
@@ -48,31 +48,31 @@
       </div>
       <div class="taskAll">
         <div class="domePlay" @click="goDomeplay">
-          <img src="../assets/img/domeplay.png" alt="">
+          <img src="https://res.youth.cn/ASO/img/domeplay.png" alt="">
           <div class="imgTtitle">试玩赚钱</div>
           <div class="titleInfo">单价高 无审核</div>
         </div>
         <div class="teacher" @click="goTeacher">
-          <img src="../assets/img/teacher.png" alt="">
+          <img src="https://res.youth.cn/ASO/img/teacher.png" alt="">
           <div class="imgTtitle">收徒赚钱</div>
           <div class="titleInfo">徒弟赚钱 我分成</div>
         </div>
         <div class="sign" @click="goSign">
-          <img src="../assets/img/sign.png" alt="">
+          <img src="https://res.youth.cn/ASO/img/sign.png" alt="">
           <div class="imgTtitle">每日签到</div>
           <div class="titleInfo">连续签到 赢大钱</div>
         </div>
         <div class="task">
-          <img src="../assets/img/task.png" alt="">
+          <img src="https://res.youth.cn/ASO/img/task.png" alt="">
           <div class="imgTtitle">高额任务</div>
           <div class="titleInfo">赚高额奖金</div>
         </div>
         <div class="friend">
-          <img src="../assets/img/friend.png" alt="">
+          <img src="https://res.youth.cn/ASO/img/friend.png" alt="">
           <div class="imgTtitle">商务合作</div>
         </div>
         <div class="newUser">
-          <img src="../assets/img/newUser.png" alt="">
+          <img src="https://res.youth.cn/ASO/img/newUser.png" alt="">
           <div class="imgTtitle">新手引导</div>
         </div>
       </div>
@@ -81,24 +81,17 @@
     <!-- 引导页 -->
     <div class="guide" v-if="guideLayer">
       <div class="guideOne" @click="guideOneFn" v-if="guideOne">
-        <img src="../assets/img/guideOne.png" alt="">
+        <img src="https://res.youth.cn/ASO/img/guideOne.png" alt="">
       </div>
       <div class="guideTwo" @click="guideTwoFn" v-if="guideTwo">
-        <img src="../assets/img/guideTwo.png" alt="">
+        <img src="https://res.youth.cn/ASO/img/guideTwo.png" alt="">
       </div>
       <div class="guideThree" @click="guideThreeFn" v-if="guideThree">
-        <img src="../assets/img/guideThree.png" alt="">
+        <img src="https://res.youth.cn/ASO/img/guideThree.png" alt="">
       </div>
     </div>
     <div class="layer" v-if="validate" @click="closeLayer">
-            <div class="signDevive" v-if="validateTwo">
-                <div class="signDeviveText">验证设备后才能正常进行任务哦</div>
-                <div class="btns">
-                    <div class="signDeviveBtn">取消</div>
-                    <div class="signDeviveBtn">验证</div>
-                </div>
-            </div>
-            
+
             <div class="signDevive" >
                 <div class="signDeviveText">请验证设备,避免影响您做任务哦</div>
                 <div class="btns">
@@ -113,6 +106,7 @@
 import $http from "../tool/url.js";
 import Axios from 'axios';
 import { Indicator } from "mint-ui";
+import { setTimeout } from 'timers';
 
 export default {
   data() {
@@ -133,41 +127,13 @@ export default {
     this.getUserInfo()
     // 检查设备是否验证
     this.setUDID() 
-    /*
-
-    如果用户之前信任过，点击应该直接进入首页，在首页判断，用户是否安装app 如果未安装，在任务详情里面进行之前的操作
-     */
-    
   },
   methods: {
     // 验证设备
     signDevice(){
       location.href="https://res.youth.cn/ASO/getUDID.mobileconfig";
     },
-    hybridApp() {
-      let that = this;
-      window.WebSocket = window.WebSocket || window.MozWebSocket;
-      this.websocket = new WebSocket(
-        "ws://127.0.0.1:9000",
-        "echo-protocol"
-      );
-      Indicator.open({
-        text: "正在链接钥匙"
-      });
-      setTimeout(()=>{
-        Indicator.close();
-      })
-      this.websocket.onopen = function() {
-        //连接客户端触发的函数
-        console.log("打开成功");
-      };
-      this.websocket.onerror = function() {
-        //链接失败就打开重新下载的弹窗
-        console.log("链接失败");
-      //that.openKey = true;
-      };
-    },
-
+    
     cheackGuide(){
       if(localStorage.getItem("guide")){
         this.guideOne = false;
@@ -192,22 +158,22 @@ export default {
       this.$router.push({path:"/",query:{}})
     },
     goDomeplay(){
-      this.$router.push({path:"/mainlist",query:{}})
+      this.$router.push({path:"/mainlist",query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     goCenter(){
-      this.$router.push({path:"/center",query:{}})
+      this.$router.push({path:"/center",query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     goCash(){
-      this.$router.push({path:"/cash",query:{total:this.userInfo.total_score}})
+      this.$router.push({path:"/cash",query:{total:this.userInfo.total_score,token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     goTeacher(){
-      this.$router.push({path:"/teacher",query:{}})
+      this.$router.push({path:"/teacher",query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     goSign(){
-      this.$router.push({path:"/sign",query:{}})
+      this.$router.push({path:"/sign",query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
     notice(){
-      var  notice =this.$refs.notice
+      var  notice =this.$refs.notice 
       var left =  0;
       clearInterval(timer)
       var  timer = setInterval(() => {
@@ -219,7 +185,7 @@ export default {
       },60);
     },
     async getUserInfo(){
-      return $http.post("/WebApi/User/getUserInfo",{uid:1232}).then((res)=>{
+      return $http.post("/WebApi/User/getUserInfo").then((res)=>{
         if(res.data.status=="1"){
           this.userInfo = res.data.data;
         }else{
@@ -231,20 +197,16 @@ export default {
     setUDID(){
       let UDID =localStorage.getItem("UDID")
       // 验证设备完成
-      if(this.params.UDID){
-        localStorage.setItem("UDID",this.params.UDID)
-        //绑定UDID
-        this.bindUDID(this.params.UDID)
-        // 之前验证过设备
-      }else if(UDID){
-        this.validate =false;
-        //没有验证过设备
+      if(UDID){
+        this.validate = false;
       }else{
         this.validate = true;
       }
+
+
     },
     async bindUDID(UDID){
-      return  $http.post("/WebApi/Udid/bindUdid",{UDID:UDID,UID:localStorage.getItem("uid")}).then((res)=>{
+      return  $http.post("/WebApi/Udid/bindUdid",{UDID:UDID}).then((res)=>{
           console.log(res)
       })
     },
@@ -257,24 +219,10 @@ export default {
     },
     //进入详情页面
     jumpDetails(id){
-      console.log(id)
-      return false;
-      this.$router.push({path:"/teacherDe",query:{taskId:id}})
+      this.$router.push({path:"/teacherDe",query:{taskId:id,token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}})
     },
-
-    // 第一次打开储存 token和uid 等登录信息
-    
-    storageUserInfo(){
-      //储存用户信息
-      if(this.params.uid && this.params.token){
-        localStorage.setItem("uid",this.params.uid)
-        localStorage.setItem("token",this.params.token)
-      }
-      
-    }
-   
-    
   }
+
 };
 </script>
 <style lang="less" >
@@ -337,14 +285,14 @@ export default {
   .userInfo {
     width: 100%;
     height: 2.1*3.125rem;
-    background: red;
     position: absolute;
     top: 0.3*3.125rem;
     left: 0;
+    z-index: 10;
     .userInfoRight {
       width: 2.3*3.125rem;
       height: 2.1*3.125rem;
-      background: url("../assets/img/top_bg2.png");
+      background: url("https://res.youth.cn/ASO/img/top_bg2.png");
       background-size: 100% 100%;
       float: left;
       margin-left: 0.2*3.125rem;
@@ -378,7 +326,7 @@ export default {
       width: 4.5*3.125rem;
       height: 100%;
       float: left;
-      background: url("../assets/img/top_bg1.png");
+      background: url("https://res.youth.cn/ASO/img/top_bg1.png");
       background-size: 100% 100%;
       margin-left: 0.25*3.125rem;
       padding: 0 0.2*3.125rem;

@@ -22,7 +22,9 @@
       infinite-scroll-disabled="loading"
       infinite-scroll-distance="10"
     >
-      <div class="list">
+      <div class="noData" v-if="!inviteList.length>0">暂无数据</div>
+
+      <div class="list" v-if="inviteList.length>0">
         <p class="tc_time">共有 <span>3</span> 名徒弟,再接再厉哦</p>
         <p class="tc_time">2019-02-14</p>
 
@@ -39,9 +41,9 @@
           </div>
         </div>
       
-       
-      </div>
       <p class="timeInfo">仅显示最近三个月的记录</p>
+
+      </div>
     </div>
 
     <!-- 第二个tab -->
@@ -51,7 +53,9 @@
       infinite-scroll-disabled="loading"
       infinite-scroll-distance="10"
     >
-      <div class="list">
+      <div class="noData" v-if="!rewardList.length>0">暂无数据</div>
+
+      <div class="list"  v-if="rewardList.length>0">
         <p class="tc_time">2019-02-14</p>
 
         <div class="itemList" v-for="(item,index) in rewardList" :key="index">
@@ -67,12 +71,14 @@
           </div>
         </div>
 
+        <p class="timeInfo">仅显示最近三个月的记录</p>
+        <div class="loadMore" v-if="loadMoreData">
+          <div class="loadImage"></div>
+          <span>加载中</span>
+        </div>
+
       </div>
-      <p class="timeInfo">仅显示最近三个月的记录</p>
-      <div class="loadMore" v-if="loadMoreData">
-        <div class="loadImage"></div>
-        <span>加载中</span>
-      </div>
+      
     </div>
     
     
@@ -113,7 +119,7 @@ export default {
             this.inviteList = res.data.data.list
         }else{
           Toast({
-            message: "请求列表失败",
+            message:res.data.msg,
             position: "center",
             duration: 2000
           });
@@ -126,7 +132,7 @@ export default {
             this.rewardList= res.data.data.list
         }else{
           Toast({
-            message: "请求列表失败",
+            message:res.data.msg,
             position: "center",
             duration: 2000
           });
@@ -143,6 +149,12 @@ export default {
 };
 </script>
 <style lang="less">
+.noData{
+  width: 100%;
+  height: 4rem;
+  text-align: center;
+  line-height: 4rem;
+}
 
 .loadMore {
   width: 100%;
@@ -154,7 +166,7 @@ export default {
   .loadImage {
     width: 1.5rem;
     height: 1.5rem;
-    background: url("../../assets/img/loading.png");
+    background: url("https://res.youth.cn/ASO/img/loading.png");
     background-size: 100% 100%;
     animation: load 0.6s infinite linear;
     margin-right: 0.3rem;

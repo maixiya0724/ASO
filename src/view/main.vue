@@ -34,7 +34,7 @@
             readonly
           >
           <input class="app_id" type="hidden" :value="item.appid" readonly>
-          <div class="left_img1">
+          <div class="left_img1 MZ-blur">
             <img :src="item.thumb" class="left_img">
           </div>
           <div class="flex1 task-info" data-restnum="27" data-message="">
@@ -58,7 +58,7 @@
       </div>
       <p class="want_to_make">想赚更多？邀请好友，轻松赚11元分成</p>
       <div class="footer_btn">
-        <button class="btn1" id="invite_friend" @click="openDownkey">邀请好友</button>
+        <button class="btn1" id="invite_friend" >邀请好友</button>
       </div>
     </div>
     <div class="keyBox" id="launch_key" v-if="openKey">
@@ -135,14 +135,13 @@
             v-if="downFiveTime"
             @click="trustKeyFn"
           >信任钱多多</button>
-          <button class="launch_app open_key_button" @click="callAppAction">打开钱多多</button>
+          <button class="launch_app open_key_button" @click="callApp">打开钱多多</button>
         </div>
       </div>
     </div>
-    <!-- 在浏览器里打开的引导 不是苹果浏览器就提示在苹果里面打开 -->
-    <div class="external_open" v-if="!issafariBrowser">
-      <img src="https://mirror.erbicun.cn/2018/images/tips_open_in_safari.png">
-    </div>
+  
+    <!-- 验证码 -->
+    <div id="veCode"></div>
     <!-- 弹窗 -->
     <div class="alert">
       <div class="alertMain">
@@ -190,16 +189,14 @@ export default {
   created() {
     this.logined();
   },
-
+  
   mounted() {
-    this.issafari();
     this.adList();
-    this.logined();
   },
-  destroyed() {
-    //this.websocket.close()
-  },
+  
   methods: {
+    // 检查本地状态获取token
+
     async adList() {
       return $http.get("/Ad/getList").then(res => {
         if (res.data.status == "1") {
@@ -212,18 +209,6 @@ export default {
           });
         }
       });
-    },
-    // 检查webscoket状态
-    checkScoket() {
-      if (window.newWebsocket.readyState != "1") {
-          this.openKey = true;
-        }
-    },
-    // 判断是否是safari浏览器
-    issafari: function() {
-      /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
-        ? (this.issafariBrowser = true)
-        : (this.issafariBrowser = false);
     },
 
     loadMore() {
@@ -240,40 +225,64 @@ export default {
       // 之前信任过
       if (localStorage.getItem("trustKey")) {
         this.openKey = true;
+
         // 为信任过
       } else {
         this.downApp = true;
       }
     },
     logined() {
-      // 开始检测登录状态  储存信息
-
-      if (this.params.token) {
-        localStorage.setItem("token", this.params.token);
-        localStorage.setItem("token_id", this.params.token_id);
+      if (!localStorage.getItem("token")) {
+        setTimeout(res => {
+          this.hybridApp();
+          
+        }, 2000);
+      }else{
+        this.$router.push({ name: "home", params: this.params });
       }
-      if (this.params.UDID) {
-        this.params.UDID ? localStorage.setItem("UDID", this.params.UDID) : "";
-        this.params.UDID ? localStorage.setItem("IDFA", this.params.IDFA) : "";
-      }
-
-      this.$router.push({
-        path: "home",
-        query: {
-          token: localStorage.getItem("token"),
-          token_id: localStorage.getItem("token_id")
-        }
-      });
     },
     // 调取原生app
     callApp: function() {
       let IosUrl = "CYRead://";
       location.href = IosUrl;
     },
+    hybridApp() {
+      let that = this;
+      window.WebSocket = window.WebSocket || window.MozWebSocket;
+      this.websocket = new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
 
+      Indicator.open({
+        text: "正在链接钥匙"
+      });
+      setTimeout(() => {
+        Indicator.close();
+      });
+      this.websocket.onopen = function() {
+        //连接客户端触发的函数
+        console.log("打开成功");
+        this.callAppAction()
+      };
+      this.websocket.onerror = function() {
+        //链接失败就打开重新下载的弹窗
+        console.log("链接失败");
+        //that.openKey = true;
+      };
+    },
     // 打开app 如果未打开 实现跳转
     callAppAction: function() {
-      this.callApp();
+      let that = this;
+      this.trustKey = false;
+      this.websocket.send(
+        JSON.stringify({
+          action: "Obtain",
+        })
+      ); // 发送参数到客户端
+      
+      this.websocket.onmessage = function(event) {
+        console.log(event.data, "回调");
+        this.isInstall = event.data.install;
+        console.log(this.isInstall)
+      };
     },
 
     downloadKey() {
@@ -312,7 +321,8 @@ export default {
       //this.trustKey =false;
       localStorage.setItem("trustKey", true);
     },
-
+    //邀请好友
+    
     showLoading() {
       Indicator.open({
         text: "加载中",
@@ -321,7 +331,8 @@ export default {
       setTimeout(() => {
         Indicator.close();
       }, 2000);
-    }
+    },
+    
   }
 };
 /*

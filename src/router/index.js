@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from "../view/home.vue"
 import DomePlayList from "../view/list.vue"
+import Main from "../view/main.vue"
 import Record from "../view/center/record.vue"
 import DomePlay from "../view/domeplay/domeplay.vue"
 import LoginOut from "../view/loginOut.vue"
@@ -24,9 +25,10 @@ import WxQr from "../view/center/wxQr.vue"
 Vue.use(Router)
 export default new Router({
   mode: 'history',
+  base:"/dist",
   routes: [
     {
-      path: '/',
+      path: '/list',
       name: 'list',
       component: DomePlayList
     },
@@ -124,6 +126,11 @@ export default new Router({
       path:'/wxQr',
       name:'wxQr',
       component:WxQr,
+    },
+    {
+      path:'/main',
+      name:'main',
+      component:Main,
     }
   ]
 })

@@ -60,19 +60,19 @@
           @click="copy"
         >复制关键词</a>
       </div>
-      <div id="openApp" class="keyword_btn" @click="inspectDome">
+      <div id="openApp" class="keyword_btn" @click="checkScoket(taskInfo.bundleid)">
         <a style="">打开应用（必须在此打开）</a>
       </div>
-      <div id="checkStatus" class="keyword_btn" style="overflow:scroll;margin: 0.93rem 0; ">
+      <div id="checkStatus" class="keyword_btn" style="overflow:scroll;margin: 0.93rem 0; " @click="checkTaskStatus">
         <a class="border">检查完成状态</a>
       </div>
-      <div id="abortTask" class="keyword_btn no_style">
+      <div id="abortTask" class="keyword_btn no_style" @click="giveUpClick">
         <a>放弃任务</a>
       </div>
     </div>
     <!--复制关键词弹窗-->
-    <div id="copyDialog" class="bg" v-if="copyText">
-      <div class="copy_succ_box">
+    <div id="copyDialog" class="bg" v-if="copyText" @click="closeLayer">
+      <div class="copy_succ_box" @click.stop>
         <p class="head">复制成功</p>
         <div class="app_box">
           <div class="app_pic">
@@ -91,11 +91,11 @@
           2、打开应用请务必
           <i>“允许使用数据”</i>，否则无法获得奖励！
         </h4>
-        <div id="gotoAppStore" class="keyword_btn">前往AppStore</div>
-        <p class="no_more_hint hint_gray not_tips" @click="noAlert">
+        <div id="gotoAppStore" class="keyword_btn" @click="goAppStore">前往AppStore</div>
+        <p class="no_more_hint hint_gray not_tips">
           <span class="on">
             <img src="https://mirror.erbicun.cn/2018/images/tosat_icon_unchecked.png">
-          </span>不再提示
+          </span>
         </p>
       </div>
     </div>
@@ -160,7 +160,7 @@
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
         <div class="not_open_key">
-          <img src="../../assets/img/icon4-75.png">
+          <img src="https://res.youth.cn/ASO/img/icon4-75.png">
           <p>钱多多未开启</p>
           <p>未开启钱多多，无法保障收益到账</p>
           <div class="key_button goto_link" data-link="bmyaoshi://" @click="callApp">启动钥匙</div>
@@ -180,7 +180,7 @@
             <span>8.5.1</span>
           </p>
           <p>任务期间需开启钱多多</p>
-          <img src="../../assets/img/icon4-75.png">
+          <img src="https://res.youth.cn/ASO/img/icon4-75.png">
           <button class="download_app" @click="download_app">
             <span>立即下载</span>
           </button>
@@ -234,6 +234,16 @@
         </div>
       </div>
     </div>
+    <!-- 取消任务 -->
+    <div class="layer" v-if="validate" @click="closeLayer">
+            <div class="signDevive" >
+                <div class="signDeviveText">取消任务</div>
+                <div class="btns">
+                    <div class="signDeviveBtn">取消</div>
+                    <div class="signDeviveBtn" @click="giveUp">确定</div>
+                </div>
+            </div>
+        </div>
   </div>
 </template>
 <script>
@@ -241,11 +251,14 @@ import Clipboard from "clipboard";
 import $http from "../../tool/url.js";
 import { Toast } from "mint-ui";
 import { Indicator } from "mint-ui";
+import { setTimeout } from 'timers';
+
+
 
 export default {
   data() {
     return {
-      copyValue: "及哦啊及",
+      copyValue: "",
       downTimeNum: "",
       taskInfo: {},
       btnCopy: {},
@@ -258,16 +271,16 @@ export default {
       downApp:false,
       openKey:false,
       fiveTime: 5,
-
+      params:this.$route.query,
+      validate:false,
     };
   },
   mounted() {
     this.getInfo();
     this.copy();
-    this.onload(); // 点击启动的时候重新走一下流程
   },
   destroyed(){
-    this.websocket.close()
+    
   },
   methods: {
     closeLayer() {
@@ -278,25 +291,18 @@ export default {
       this.trustKey = false;
       this.downApp=false;
       this.openKey=false;
+      this.validate=false;
     },
-    async onload() {
-       Indicator.open({
-        text: "连接钥匙中...",
-        spinnerType: "fading-circle"
-      });
-      
-      setTimeout(()=>{
-        this.hybridApp()
-        this.inspect()
-        Indicator.close()
-      },2000)
-    },
-    callApp: function() {
-      let IosUrl = "CYRead://";
-      let url_ios_download = "";
-      let loadTime = new Date();
-      location.href = IosUrl;
-    },
+
+     checkScoket(bundleid) {
+       console.log(window.newWebsocket.readyState )
+        if (window.newWebsocket.readyState != "1") {
+            this.openKey = true;
+          }else{
+            this.inspectDome(bundleid)
+          }
+      },
+  
      // 下载钥匙
     downloadKey() {
       // 下载钥匙应用
@@ -327,67 +333,41 @@ export default {
     closeDownloadKey() {
       this.downApp = false;
     },
-    inspect() {
+     callApp: function() {
+      let IosUrl = "CYRead://";
+      location.href = IosUrl;
+    },
+
+
+    inspectDome(bundleid) {
+      console.log(bundleid)
+
       let that = this;
       this.trustKey = false;
-      // this.websocket.send(
-      //   JSON.stringify({
-      //     action: "isopenApp",
-      //     appBuddleId: "cn.youth.news"
-      //   })
-      // ); // 发送参数到客户端
 
-      // this.websocket.onmessage = function(event) {
-      //   console.log(event.data, "回调");
-      //   this.isInstall = event.data.install;
-      //   if (event.data.install == "0") {
-      //     //未安装
-      //     that.openKey = true;
-      //   } else {
-      //     //已安装 打开app
-      //     this.callApp()
-      //   }
-      // };
-    },
-    //创建本地链接
-    hybridApp() {
-      let that = this;
-      window.WebSocket = window.WebSocket || window.MozWebSocket;
-      this.websocket = new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
-
-      this.websocket.onopen = function() {
-        //连接客户端触发的函数
-        console.log("打开成功");
-      };
-      this.websocket.onerror = function() {
-        //链接失败就打开重新下载的弹窗
-        console.log("链接失败");
-        //that.openKey = true;
-      };
-    },
-    inspectDome() {
-      let that = this;
-      this.trustKey = false;
-      this.websocket.send(
-        JSON.stringify({
-          action: "isopenApp",
-          appBuddleId: "cn.youth.news",
-          appId:"1",
-          needTime:1,//不需要0 需要 1;
-        })
-      ); // 发送参数到客户端
-
-      this.websocket.onmessage = function(event) {
-        console.log(event.data, "回调");
-        this.isInstall = event.data.install;
-        if (event.data.install == "0") {
-          //未安装
-          //that.openKey = true;
-        } else {
-          //已安装 打开app
-          //this.callApp()
+        window.newWebsocket.send(
+          JSON.stringify({
+              action: "isopenApp",
+              appBuddleId: bundleid,
+              appId:"1",
+              needTime:1,//不需要0 需要 1;
+            })
+        ); // 发送参数到客户端
+        
+         window.newWebsocket.onmessage = function(event) {
+          if (event.data.isInstall == "0") {
+            alert(1)
+            //未安装
+             Toast({
+              message: "请先去下载该app",
+              position: "center",
+              duration: 2000
+            });
+          } else {
+            //已安装 打开app
+          }
         }
-      };
+
     },
 
     //不再提示
@@ -397,7 +377,6 @@ export default {
     },
     copy() {
       this.btnCopy = new Clipboard(document.getElementById("copy_keyword"));
-      console.log(this.btnCopy);
       this.btnCopy.on("success", e => {
         console.log(e);
         if (!localStorage.getItem("noalert")) {
@@ -439,34 +418,36 @@ export default {
     },
     //获取任务详情
     async getInfo() {
-      return $http.post("Ad/getDetail/id/3", { id: "3" }).then(res => {
+      return $http.get(`/Ad/getDetail/id/${this.params.id}`).then(res => {
+
         if (res.data.status == "1") {
           this.taskInfo = res.data.data;
+
+          this.copyValue = res.data.data.keyword;
           this.downTimeFn();
         } else {
           console.log("请求数据错误");
         }
       });
     },
-    //标记任务是否开始 需要记录时间 need_play_time=1
-    startTask() {
-      $http.get("/Ad/openApp/id/5/uid/2").then(res => {
-        console.log(res);
-      });
-    },
+   
     //激活接口 检查用户任务状态
     checkTaskStatus() {
       let param = {
-        id: "5",
-        uid: "2",
-        need_play_time: "1",
+        id:this.taskInfo.id,
+        need_play_time:"1",
         ad: "1007",
         channel: "103",
         plan: "7",
-        idfa: ""
+        idfa: "G229697E-7F09-4I02-A9E7-418G68742652",
+        systemversion:"",
+        devicemodel:"",
+        udid:"5cd037f3baea401cfb9b85097124f187b2bddea4",
+        keyword:"音乐"
       };
-      $http.get("/Ad/activeAd", {}).then(res => {
-        if (res.status == "1") {
+      console.log(param)
+      $http.post(`/Ad/activeAd`,param).then(res => {
+        if (res.data.status == "1") {
           Toast({
             message: "检查用户状态",
             position: "center",
@@ -475,6 +456,28 @@ export default {
         }
       });
     },
+    //放弃任务
+    giveUp(){
+      $http.get(`/Ad/giveUpAd/id/${this.params.id}?ad=1050&channel=103&plan=13&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=10.2&devicemodel=iPhone7,2&ip=192.168.1.199&udid=${localStorage.getItem("UDID")}&keyword=商城&callback=`).then(res=>{
+        if(res.data.status=="1"){
+            Toast({
+              message: "放弃任务成功",
+              position: "center",
+              duration: 2000
+            });
+            this.$router.go(-1)
+        }else{
+
+        }
+      })
+    },
+    giveUpClick(){
+      this.validate=true;
+      this.closeLayer();
+    },
+    goAppStore(){
+      location.href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/search?mt=8#software"
+    }
     
   }
 };
@@ -486,7 +489,7 @@ export default {
   align-items: center;
 }
 .head_top {
-  background-image: url("../../assets/img/xq_top_bg.png");
+  background-image: url("https://res.youth.cn/ASO/img/xq_top_bg.png");
 }
 .head_topCenter {
   width: 90%;
@@ -551,6 +554,49 @@ export default {
 .keyword_btnActive {
   background: #ff9900;
   color: #fff;
+}
+
+.signDevive {
+  width: 6*3.125rem;
+  padding: 0.2*3.125rem;
+  background: #fff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 0.2*3.125rem;
+  overflow: hidden;
+  z-index: 100;
+  .signDeviveText {
+    font-size: 16px;
+    color: #000;
+    text-align: center;
+    position: relative;
+    top: 0.2*3.125rem;
+  }
+  .btns {
+    width: auto;
+    height: 0.3*3.125rem;
+    margin: 0.4*3.125rem;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    top: 0.2*3.125rem;
+    .signDeviveBtn{
+        font-size: 16px;
+        color: #fe6631;
+        margin-left: 0.5*3.125rem;
+    }
+  }
+}
+.layer {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100;
 }
 </style>
 

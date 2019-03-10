@@ -33,7 +33,7 @@
                                     @click="goRecord"
                                     data-link="/ios/my/apps.html"
                                 >
-                                    <img src="../../assets/img/sr_icon.png">
+                                    <img src="https://res.youth.cn/ASO/img/sr_icon.png">
                                     <p>收入明细</p>
                                 </li>
                                 <li
@@ -41,7 +41,7 @@
                                     data-link="/ios/user/invites.html"
                                     @click="goTeacherDe"
                                 >
-                                    <img src="../../assets/img/st_icon.png">
+                                    <img src="https://res.youth.cn/ASO/img/st_icon.png">
                                     <p>收徒明细</p>
                                 </li>
                                 <li
@@ -49,7 +49,7 @@
                                     data-link="/ios/my/enchashments.html"
                                     @click="goCashDe"
                                 >
-                                    <img src="../../assets/img/tx_icon.png">
+                                    <img src="https://res.youth.cn/ASO/img/tx_icon.png">
                                     <p>提现明细</p>
                                 </li>
                             </div>
@@ -99,7 +99,7 @@
                         @click="goProblem"
                     >
                         <div class="pc_left_box">
-                            <img src="../../assets/img/list1_icon.png" class="left_icon">
+                            <img src="https://res.youth.cn/ASO/img/list1_icon.png" class="left_icon">
                         </div>
                         <div class="pc_right_box">
                             <span class="list_text">常见问题</span>
@@ -117,7 +117,7 @@
                         data-link="/ios/my/subscribe.html"
                     >
                         <div class="pc_left_box">
-                            <img src="../../assets/img/list2_icon.png" class="left_icon">
+                            <img src="https://res.youth.cn/ASO/img/list2_icon.png" class="left_icon">
                         </div>
                         <div class="pc_right_box">
                             <span class="list_text">关注微信</span>
@@ -136,12 +136,12 @@
                         data-link="/ios/my/to_bind_mobile.html"
                     >
                         <div class="pc_left_box">
-                            <img src="../../assets/img/list3_icon.png" class="left_icon">
+                            <img src="https://res.youth.cn/ASO/img/list3_icon.png" class="left_icon">
                         </div>
                         <div class="pc_right_box">
                             <span class="list_text">绑定手机号</span>
                             <div class="right_icon">
-                                <span class="right_text">18519762816</span>
+                                <span class="right_text" v-if="userInfo.mobile">{{userInfo.mobile}}</span>
                                 <img class="jiantou"
                                     src="https://mirror.erbicun.cn/2018/images/icon_right_arrow.png"
                                 >
@@ -229,28 +229,28 @@ export default {
   },
   methods: {
     goCash() {
-      this.$router.push({ path: "/cash", query: {total:this.userInfo.total_score} });
+      this.$router.push({ path: "/cash", query: {total:this.userInfo.total_score},token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")});
     },
     taskDetails() {
-      this.$router.push({ path: "/cash", query: {} });
+      this.$router.push({ path: "/cash", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     goRecord() {
-      this.$router.push({ path: "/record", query: {} });
+      this.$router.push({ path: "/record", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     goTeacherDe() {
-      this.$router.push({ path: "/teacherDe", query: {} });
+      this.$router.push({ path: "/teacherDe", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     goCashDe() {
-      this.$router.push({ path: "/cashlist", query: {} });
+      this.$router.push({ path: "/cashlist", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     goProblem() {
-      this.$router.push({ path: "/problem", query: {} });
+      this.$router.push({ path: "/problem", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     goBindPhone() {
-      this.$router.push({ path: "/bindphone", query: {} });
+      this.$router.push({ path: "/bindphone", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     goBindWx() {
-      this.$router.push({ path: "/bindWx", query: {} });
+      this.$router.push({ path: "/bindWx", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
     },
     async getUserInfo() {
       return httpUrl

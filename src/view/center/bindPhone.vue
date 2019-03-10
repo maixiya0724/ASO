@@ -16,10 +16,10 @@
         </div>
       </header>
       <!--已绑定手机但可修改-->
-      <div class="bm_content" v-if="!bindPhone">
+      <div class="bm_content"  v-if="userInfo.is_mobile=='1'">
         <p class="current_mobile">
           当前手机号：
-          <span>18519762816</span>
+          <span>{{userInfo.mobile}}</span>
         </p>
         <div class="footer_btn">
           <button class="no_modification" id="confirm_bind">当前不可修改</button>
@@ -27,15 +27,15 @@
         </div>
       </div>
       <!--未绑定手机-->
-      <div class="bindPhone" v-if="bindPhone">
-        <div class="inputList">
+      <div class="bindPhone" v-if="userInfo.is_mobile!='1'">
+        <div class="inputList" >
           <div class="inputItem" style="border-bottom:1px solid #d2cece;">
             <input class="text" type="text"  placeholder="请输入手机号" v-model.trim="phone">
-            <div class="btn" v-if="show" @click="getCode">获取语音验证码</div>
+            <div class="btn" v-if="show" @click="getCode">获取验证码</div>
             <div class="btn code" v-if="!show">剩余{{count}}秒</div>
 
           </div>
-          <div class="inputItem">
+          <div class="inputItem" >
             <input class="text" type="text" v-model.trim="code" placeholder="请输入验证码">
           </div>
         </div>
@@ -48,7 +48,7 @@
     <!-- 绑定手机号 -->
     <div class="alert" style="display:none;">
         <div class="alertMain">
-          <div class="alertText">请注意接收来电</div>
+          <div class="alertText">请注意接收验证码</div>
           <div class="alertBtn">确定</div>
         </div>
     </div>
@@ -56,20 +56,23 @@
 </template>
 
 <script>
+import $http from "../../tool/url.js";
 import { Toast } from "mint-ui";
 
 export default {
   data() {
     return {
-      bindPhone:true,
       phone:"",
       code:"",
       show: true,
       count: '',
       timer: null,
+      userInfo:{},
     };
   },
-  mounted() {},
+  mounted() {
+    this.getUserInfo()
+  },
   methods: {
     checkPhone() {
       var TEL_REGEXP = /(?:^1[3456789]|^9[28])\d{9}$/;
@@ -97,15 +100,13 @@ export default {
         });
         return false;
       }
+
+      this.bindPhoneFn()
       
-      // 发起提现请求
-      let param = {
-          phone:this.bindPhone,
-          name:this.bindName,
-          uid:""
-      }
     },
     getCode(){
+    this.requestCode()
+
      const TIME_COUNT = 60;
      if (!this.timer) {
        this.count = TIME_COUNT;
@@ -120,7 +121,47 @@ export default {
         }
        }, 1000)
       }
-   }
+   },
+   requestCode(){
+     $http.post("/WebApi/Sms/send",{mobile:this.phone}).then(res=>{
+       console.log(res)
+       if(res.data.status=="1"){
+         Toast({
+              message: "发送成功",
+              position: "center",
+              duration: 2000
+            });
+       }
+     })
+   },
+   bindPhoneFn(){
+     $http.post("/WebApi/Sms/bind",{mobile:this.phone,code:this.code}).then(res=>{
+       if(res.data.status=="1"){
+          Toast({
+              message: "绑定成功",
+              position: "center",
+              duration: 2000
+            });
+       }else{
+         Toast({
+              message:res.data.msg,
+              position: "center",
+              duration: 2000
+            });
+       }
+     })
+   },
+   //获取用户信息
+   async getUserInfo(){
+      return $http.post("/WebApi/User/getUserInfo").then((res)=>{
+        if(res.data.status=="1"){
+          this.userInfo = res.data.data;
+
+        }else{
+          console.log("请求用户数据失败")
+        }
+      })
+    },
   }
 };
 </script>

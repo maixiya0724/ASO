@@ -23,7 +23,7 @@
                 <div class="text_list">
                     <p class="two_text">2、在微信搜索框中粘贴“la6680”搜素出来“秒来大钱”关注进行【提现绑定】</p>
                     <div class="search_img">
-                        <img style="margin: 0 auto;" src="../../assets/img/wechat_course_img.png">
+                        <img style="margin: 0 auto;" src="https://res.youth.cn/ASO/img/wechat_course_img.png">
                     </div>
                 </div>
                 <div class="text_list">

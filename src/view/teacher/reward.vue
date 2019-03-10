@@ -112,7 +112,7 @@ export default {
   .loadImage {
     width: 1.5rem;
     height: 1.5rem;
-    background: url("../../assets/img/loading.png");
+    background: url("https://res.youth.cn/ASO/img/loading.png");
     background-size: 100% 100%;
     animation: load 0.6s infinite linear;
     margin-right: 0.3rem;

@@ -24,7 +24,7 @@
         infinite-scroll-disabled="loading"
         infinite-scroll-distance="10"
       >
-        <div class="list list1 list_padding1" @click="goTeacher">
+        <!-- <div class="list list1 list_padding1" @click="goTeacher">
           <div class="left_img1 MZ-blur">
             <img src="" class="left_img">
           </div>
@@ -44,12 +44,12 @@
               <span class="font2">200</span>元
             </div>
           </div>
-        </div>
+        </div>-->
         <div
           class="list list1 list_padding1"
           v-for="(item,index) in myTaskList.doing_list"
-          v-if="index>0"
-          :key="index"
+          :key="index+'1'"
+          v-if="myTaskList.doing_list.length>0"
           @click="goMyTask(item.id)"
         >
           <div class="left_img1 MZ-blur">
@@ -64,22 +64,15 @@
           </div>
           <div class="red">
             <div class="font1 red2">
-              +
-              <span class="font2">{{item.price}}</span>元
+              <span class="font2" style="font-size:16px;">进行中</span>
             </div>
           </div>
         </div>
-        <div class="taskAll">
-          以下
-          <span>63</span>个任务即将开始,总共
-          <span>57.28</span>元,准时来抢
-        </div>
-        <!-- 可接的任务 -->
         <div
           class="list list1 list_padding1"
-          v-for="(item,index) in myTaskList.not_do_list"
-          :key="index"
-          @click="grubTask(item.id)"
+          v-for="(item,indexs) in myTaskList.not_do_list"
+          :key="indexs"
+          @click="checkScoket(item)"
         >
           <div class="left_img1 MZ-blur">
             <img :src="item.thumb" class="left_img">
@@ -98,24 +91,29 @@
             </div>
           </div>
         </div>
+        <!-- <div class="taskAll">
+          以下
+          <span>63</span>个任务即将开始,总共
+          <span>57.28</span>元,准时来抢
+        </div>-->
+        <!-- 可接的任务 -->
       </div>
       <div class="loadMore" v-if="loadMoreData">
         <div class="loadImage"></div>
         <span>加载中</span>
       </div>
       <p class="want_to_make">想赚更多？邀请好友，轻松赚11元分成</p>
-      <div class="footer_btn">
+      <!-- <div class="footer_btn">
         <button class="btn1" id="invite_friend" @click="goTeacher">邀请好友</button>
-      </div>
+      </div>-->
     </div>
-    <!-- 可接的任务 -->
     <!-- 验证码 -->
     <div id="veCode"></div>
     <div class="keyBox" id="launch_key" v-if="openKey">
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
         <div class="not_open_key">
-          <img src="../../assets/img/icon4-75.png">
+          <img src="https://res.youth.cn/ASO/img/icon4-75.png">
           <p>钱多多未开启</p>
           <p>未开启钱多多，无法保障收益到账</p>
           <div class="key_button goto_link" data-link="bmyaoshi://" @click="callApp">启动钥匙</div>
@@ -126,7 +124,6 @@
         </div>
       </div>
     </div>
-
     <div class="keyBox" id="download_key" v-if="downApp">
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
@@ -136,7 +133,7 @@
             <span>8.5.1</span>
           </p>
           <p>任务期间需开启钱多多</p>
-          <img src="../../assets/img/icon4-75.png">
+          <img src="https://res.youth.cn/ASO/img/icon4-75.png">
           <button class="download_app" @click="download_app">
             <span>立即下载</span>
           </button>
@@ -208,6 +205,16 @@
         <div class="alertBtn">确定</div>
       </div>
     </div>
+    <!-- 放弃任务 -->
+    <div class="layer" v-if="giveUpTask">
+      <div class="signDevive">
+        <div class="signDeviveText">确定要放弃正在进行的任务么</div>
+        <div class="btns">
+          <div class="signDeviveBtn" @click="closeLayer">取消</div>
+          <div class="signDeviveBtn" @click="giveUpTaskBtn(myTaskList.doing_list)">确定</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -232,12 +239,13 @@ export default {
       downApp: false,
       fiveTime: 5,
       downFiveTime: false,
-      adListData: [],
       loadMoreData: false,
       myTaskAll: [],
       myTaskList: {},
       websocket: {},
-      openKey:false,
+      giveUpTask: false,
+      captchaIns: {},
+      taskId: ""
     };
   },
   created() {},
@@ -245,33 +253,28 @@ export default {
   mounted() {
     this.onload();
   },
-  destroyed(){
-    this.websocket.close()
-  },
   methods: {
     async onload() {
-      this.adList();
-      this.veCode();
       this.myAdList();
-
-       Indicator.open({
-        text: "连接钥匙中...",
-        spinnerType: "fading-circle"
-      });
-      
-      setTimeout(()=>{
-        this.hybridApp()
-        this.inspect()
-        Indicator.close()
-      },2000)
+      this.veCode();
     },
-    //打开信任钱多多
-    trustKeyFn(){
-
+    closeLayer() {
+      this.giveUpTask = false;
     },
+
     closeDownloadKey() {
       this.downApp = false;
     },
+     // 检查webscoket状态
+    checkScoket(item) {
+      console.log(window.newWebsocket.readyState,"状态值")
+      if (window.newWebsocket.readyState != "1") {
+          this.openKey = true;
+        }else{
+          this.grubTask(item)
+        }
+    },
+    
     // 下载钥匙
     download_app() {
       this.downApp = false;
@@ -302,118 +305,91 @@ export default {
     },
     callApp: function() {
       let IosUrl = "CYRead://";
-      let url_ios_download = "";
-      let loadTime = new Date();
       location.href = IosUrl;
     },
-    //检查是否连接钥匙
-    inspect() {
-      let that = this;
-      this.trustKey = false;
-      
-      // this.websocket.send(
-      //   JSON.stringify({
-      //     action: "isopenApp",
-      //     appBuddleId: "cn.youth.news"
-      //   })
-      // ); // 发送参数到客户端
-
-      // this.websocket.onmessage = function(event) {
-      //   console.log(event.data, "回调");
-      //   this.isInstall = event.data.install;
-      //   if (event.data.install == "0") {
-      //     //未安装
-      //     that.openKey = true;
-      //   } else {
-      //     //已安装 打开app
-      //     this.callApp()
-      //   }
-      // };
-    },
-    //创建本地链接
-    hybridApp() {
-      let that = this;
-      window.WebSocket = window.WebSocket || window.MozWebSocket;
-      this.websocket = new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
-
-      this.websocket.onopen = function() {
-        //连接客户端触发的函数
-        console.log("打开成功");
-      };
-      this.websocket.onerror = function() {
-        //链接失败就打开重新下载的弹窗
-        console.log("链接失败");
-        //that.openKey = true;
-      };
-    },
+    
     // 去收徒页面
     goTeacher() {
-      this.$router.push({ path: "/teacher", query: {} });
+      this.$router.push({ path: "/teacher", query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}});
     },
     // 我的任务详情
     goMyTask(id) {
-      this.$router.push({ path: "/domeplay", query: { taskId: id } });
+      this.$router.push({ path: "/domeplay", query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id"),id:id} });
     },
     // 抢任务
-    async grubTask() {
-      // 抢任务之前先检查任务是否领取过
-      let obj={};
-      return $http.get("/Ad/grabAd/id/3/uid/2").then(res=>{
-        console.log(res)
-      })
-     
-      
+    async grubTask(item) {
+      // 抢任务之前先判断是否有在做的任务
+      let that = this;
+      this.taskId = item.id;
 
+      if (this.myTaskList.doing_list[0]) {
+
+        this.giveUpTask = true;
+
+      } else {
+        // 没有正在进行的任务
+        this.captchaIns && this.captchaIns.popUp();
+      }
     },
-    // 排重任务
-    async excludeTask() {
-      let obj = {
-        ad: "",
-        idfa: "",
-        channel: "",
-        systemversion: "",
-        devicemodel: "",
-        ip: "",
-        udid: "",
-        plan: ""
-      };
+    grubTaskAjax() {
       Indicator.open({
         text: "争抢任务中...",
         spinnerType: "fading-circle"
       });
-      return Axios.get("http://api.xiaojushiwan.com/repetition", obj).then(
-        res => {
-          console.log(res);
-          // 抢任务
+      // 抢任务之前先检查任务是否领取过
+      let obj = {};
+      return $http
+        .get(
+          `/Ad/grabAd/id/${
+            this.taskId
+          }/uid/2?ad=1050&channel=103&plan=13&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=10.2&devicemodel=iPhone7,2&ip=192.168.1.199&udid=&keyword=商城&callback=`,
+          {}
+        )
+        .then(res => {
           Indicator.close();
-          // 抢到任务
-          Toast({
-            message: "成功抢到任务！请在30分钟内完成",
-            position: "center",
-            duration: 2000
-          });
-          //
-        }
-      );
+          if (res.data.status == "1") {
+            // 争抢任务成功
+            Toast({
+              message: "成功抢到任务！请在30分钟内完成",
+              position: "center",
+              duration: 2000
+            });
+            //争抢成功后更新数据
+            this.myAdList();
+            this.goMyTask(this.taskId)
+          } else {
+            Toast({
+              message: "争抢失败," + res.data.message,
+              position: "center",
+              duration: 2000
+            });
+          }
+        });
     },
-    // 获取全部列表
-    async adList() {
-      return $http.get("/Ad/getList").then(res => {
-        if (res.data.status == "1") {
-          this.adListData = res.data.data;
-        } else {
-          Toast({
-            message: "请求列表失败",
-            position: "center",
-            duration: 2000
-          });
-        }
-      });
+    giveUpTaskBtn(list) {
+      let taskId = "";
+      taskId = list[0].id;
+      $http
+        .get(
+          `/Ad/giveUpAd/id/${taskId}/?ad=1050&channel=103&plan=13&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=10.2&devicemodel=iPhone7,2&ip=192.168.1.199&udid=${localStorage.getItem("UDID")}&keyword=商城&callback=`
+        )
+        .then(res => {
+          if (res.data.status == "1") {
+            Toast({
+              message: "放弃任务成功",
+              position: "center",
+              duration: 2000
+            });
+            this.closeLayer();
+            this.myAdList();
+          } else {
+          }
+        });
     },
-    // 获取我的任务列表
 
+    // 获取我的任务列表
     async myAdList() {
-      return $http.post("/Ad/getUserAdList", { uid: "2" }).then(res => {
+      return $http.get("/Ad/getUserAdList").then(res => {
         if (res.data.status == "1") {
           this.myTaskList = res.data.data;
         } else {
@@ -427,7 +403,7 @@ export default {
     },
 
     veCode() {
-      let captchaIns;
+      let that = this;
       initNECaptcha(
         {
           element: "#veCode",
@@ -436,29 +412,26 @@ export default {
           width: "320px",
           onClose: function() {
             // 弹出关闭结束后将会触发该函数
-            captchaIns.destroy();
+            that.captchaIns.destroy();
           },
           onload() {
-            captchaIns.refresh();
+            that.captchaIns.refresh();
           },
           // 成功时出发的回调
           onVerify() {
-            console.log("成功了");
+            that.grubTaskAjax();
           }
         },
         function(instance) {
           // 初始化成功后得到验证实例instance，可以调用实例的方法
-          captchaIns = instance;
+          that.captchaIns = instance;
         },
         function(err) {
           // 初始化失败后触发该函数，err对象描述当前错误信息
         }
       );
-
       // 监听button的点击事件，弹出验证码
-      document.getElementById("code").addEventListener("click", function() {
-        captchaIns && captchaIns.popUp();
-      });
+      document.getElementById("code").addEventListener("click", function() {});
     },
 
     loadMore() {
@@ -469,7 +442,7 @@ export default {
 
     //邀请好友
     shareBtn() {
-      location.href = "http://file.weixinkd.com/ASO/1/232udid.mobileconfig";
+      //location.href = "http://file.weixinkd.com/ASO/1/232udid.mobileconfig";
     },
     showLoading() {
       Indicator.open({
@@ -1120,7 +1093,7 @@ export default {
   .loadImage {
     width: 1.5rem;
     height: 1.5rem;
-    background: url("../../assets/img/loading.png");
+    background: url("https://res.youth.cn/ASO/img/loading.png");
     background-size: 100% 100%;
     animation: load 0.6s infinite linear;
     margin-right: 0.3rem;
@@ -1162,6 +1135,49 @@ export default {
 
 #task-list {
   background: #f2f1f8;
+}
+
+.signDevive {
+  width: 6 * 3.125rem;
+  padding: 0.2 * 3.125rem;
+  background: #fff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 0.2 * 3.125rem;
+  overflow: hidden;
+  z-index: 100;
+  .signDeviveText {
+    font-size: 16px;
+    color: #000;
+    text-align: center;
+    position: relative;
+    top: 0.2 * 3.125rem;
+  }
+  .btns {
+    width: auto;
+    height: 0.3 * 3.125rem;
+    margin: 0.4 * 3.125rem;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    top: 0.2 * 3.125rem;
+    .signDeviveBtn {
+      font-size: 16px;
+      color: #fe6631;
+      margin-left: 0.5 * 3.125rem;
+    }
+  }
+}
+.layer {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100;
 }
 </style>
 

@@ -19,13 +19,13 @@
             <div class="signDataList">
                 <div class="signItemed" v-for="(item,index) in signList.list" :key="index" v-if="item.sign=='1'">
                     <div class="itemIcon">
-                        <img src="../assets/img/signDayed.png" alt="">
+                        <img src="https://res.youth.cn/ASO/img/signDayed.png" alt="">
                     </div>
                     <div class="signTime">{{item.time}}</div>
                 </div>
                 <div class="signItem" v-for="(item,index) in signList.list" :key="index" v-if="item.sign!='1'" @click="signData">
                     <div class="itemIcon">
-                        <img src="../assets/img/signDay.png" alt="">
+                        <img src="https://res.youth.cn/ASO/img/signDay.png" alt="">
                     </div>
                     <div class="signTime">{{item.time}}</div>
                 </div>
@@ -44,7 +44,7 @@
                         <div class="itemMoneyNum"><span>0.2</span>元</div>
                         <p>现金奖励</p>
                         <div class="successSign" v-if="signDay>=3">
-                            <img src="../assets/img/successSign.png" alt="">
+                            <img src="https://res.youth.cn/ASO/img/successSign.png" alt="">
                         </div>
                     </div>
                     <div class="itemInfo">连续签到3天</div>
@@ -55,7 +55,7 @@
                         <div class="itemMoneyNum"><span>0.3</span>元</div>
                         <p>现金奖励</p>
                         <div class="successSign" v-if="signDay>=5">
-                            <img src="../assets/img/successSign.png" alt="">
+                            <img src="https://res.youth.cn/ASO/img/successSign.png" alt="">
                         </div>
                     </div>
                     <div class="itemInfo">连续签到5天</div>
@@ -66,7 +66,7 @@
                         <div class="itemMoneyNum"><span>0.5</span>元</div>
                         <p>现金奖励</p>
                         <div class="successSign" v-if="signDay>=7">
-                            <img src="../assets/img/successSign.png" alt="">
+                            <img src="https://res.youth.cn/ASO/img/successSign.png" alt="">
                         </div>
                     </div>
                     <div class="itemInfo">连续签到7天</div>
@@ -104,7 +104,7 @@ export default {
 .signCenter {
   width: 100%;
   height: 3.4*3.125rem;
-  background: url("../assets/img/signBanner.png");
+  background: url("https://res.youth.cn/ASO/img/signBanner.png");
   background-size: 100% 100%;
   margin-top: 0.9*3.125rem;
 }
@@ -227,7 +227,7 @@ export default {
         .titleImg{
             width: 2.8*3.125rem;
             height: 0.3*3.125rem;
-            background: url(../assets/img/title.png);
+            background: url(https://res.youth.cn/ASO/img/title.png);
             background-size: 100% 100%;
             p{
                 font-size:0.34*3.125rem;
@@ -317,7 +317,7 @@ export default {
         .next{
             width: 0.4*3.125rem;
             height: 0.28*3.125rem;
-            background: url("../assets/img/next.png");
+            background: url("https://res.youth.cn/ASO/img/next.png");
             background-size: 100% 100%;
             position: relative;
             top: -0.25*3.125rem;

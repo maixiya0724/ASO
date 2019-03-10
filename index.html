@@ -25,8 +25,25 @@
   <body>
     <div id="app"></div>
     <script src="https://cdn.bootcss.com/vConsole/3.2.2/vconsole.min.js"></script>
-    <script src="https://cdn.staticfile.org/zepto/1.0rc1/zepto.min.js"></script>
-    <script src="http://cstaticdun.126.net/load.min.js"></script>
-    <script src="https://cdn.staticfile.org/socket.io/2.2.0/socket.io.slim.js"></script>
+    <script src="https://cstaticdun.126.net/load.min.js"></script>
+    <script>
+      
+    window.onload = function(){
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+        window.newWebsocket = new WebSocket(
+          "ws://127.0.0.1:9000",
+          "echo-protocol"
+        );
+        window.newWebsocket.onopen = function() {
+          //连接客户端触发的函数
+          console.log("打开成功");
+        };
+        window.newWebsocket.onerror = function() {
+          //链接失败就打开重新下载的弹窗
+          console.log("链接失败");
+      };
+      console.log(window.newWebsocket.readyState)
+    }
+    </script>
   </body>
 </html>
