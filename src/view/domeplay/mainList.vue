@@ -80,7 +80,6 @@
           <div class="flex1 task-info" data-restnum="27" data-message="">
             <p class="app_title">
               {{item.app_name}}
-              <i class="three_kinds_red border2">付费</i>
             </p>
             <p>剩余{{item.quantity-item.doing_num-item.completed_num}}份</p>
           </div>
@@ -102,7 +101,7 @@
         <div class="loadImage"></div>
         <span>加载中</span>
       </div>
-      <p class="want_to_make">想赚更多？邀请好友，轻松赚11元分成</p>
+      <p class="want_to_make">每日14点发放大量任务</p>
       <!-- <div class="footer_btn">
         <button class="btn1" id="invite_friend" @click="goTeacher">邀请好友</button>
       </div>-->
@@ -215,6 +214,15 @@
         </div>
       </div>
     </div>
+    <div class="layer" v-if="validate" @click="closeLayer">
+      <div class="signDevive">
+        <div class="signDeviveText">请验证设备,避免影响您做任务哦</div>
+        <div class="btns">
+          <div class="signDeviveBtn">取消</div>
+          <div class="signDeviveBtn" @click="signDevice">验证</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -245,36 +253,50 @@ export default {
       websocket: {},
       giveUpTask: false,
       captchaIns: {},
-      taskId: ""
+      taskId: "",
+      validate: false,
+      taskInfo: {}
     };
   },
   created() {},
 
   mounted() {
     this.onload();
+    //this.resizeTask();
   },
   methods: {
     async onload() {
       this.myAdList();
       this.veCode();
+      this.setUDID();
     },
     closeLayer() {
       this.giveUpTask = false;
+      this.validate = false;
+    },
+    // 验证设备
+    signDevice() {
+      location.href = "https://res.youth.cn/ASO/getUDIDSigned.mobileconfig";
     },
 
     closeDownloadKey() {
       this.downApp = false;
     },
-     // 检查webscoket状态
+    // 检查webscoket状态
     checkScoket(item) {
-      console.log(window.newWebsocket.readyState,"状态值")
-      if (window.newWebsocket.readyState != "1") {
+      console.log("检查状态");
+      if (localStorage.getItem("UDID")) {
+        console.log("以获取手机ID");
+        if (window.newWebsocket.readyState != "1") {
           this.openKey = true;
-        }else{
-          this.grubTask(item)
+        } else {
+          this.grubTask(item);
         }
+      } else {
+        this.validate = true;
+      }
     },
-    
+
     // 下载钥匙
     download_app() {
       this.downApp = false;
@@ -307,28 +329,48 @@ export default {
       let IosUrl = "CYRead://";
       location.href = IosUrl;
     },
-    
+
     // 去收徒页面
     goTeacher() {
-      this.$router.push({ path: "/teacher", query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")}});
+      this.$router.push({
+        path: "/teacher",
+        query: {
+          cookie: localStorage.getItem("cookie"),
+          cookie_id: localStorage.getItem("cookie_id")
+        }
+      });
     },
     // 我的任务详情
     goMyTask(id) {
-      this.$router.push({ path: "/domeplay", query:{token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id"),id:id} });
+      if (localStorage.getItem("UDID")) {
+        this.$router.push({
+          path: "/domeplay",
+          query: {
+            cookie: localStorage.getItem("cookie"),
+            cookie_id: localStorage.getItem("cookie_id"),
+            id: id
+          }
+        });
+      } else {
+        this.validate = true;
+      }
     },
     // 抢任务
     async grubTask(item) {
       // 抢任务之前先判断是否有在做的任务
       let that = this;
       this.taskId = item.id;
+      this.taskInfo = item;
 
       if (this.myTaskList.doing_list[0]) {
-
         this.giveUpTask = true;
-
       } else {
-        // 没有正在进行的任务
-        this.captchaIns && this.captchaIns.popUp();
+        // 没有正在进行的任务 并且没有验证过弹窗
+        if (!localStorage.getItem("code")) {
+          this.captchaIns && this.captchaIns.popUp();
+        } else {
+          that.grubTaskAjax();
+        }
       }
     },
     grubTaskAjax() {
@@ -337,13 +379,12 @@ export default {
         spinnerType: "fading-circle"
       });
       // 抢任务之前先检查任务是否领取过
-      let obj = {};
+      console.log(this.taskInfo)
+
+
       return $http
         .get(
-          `/Ad/grabAd/id/${
-            this.taskId
-          }/uid/2?ad=1050&channel=103&plan=13&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=10.2&devicemodel=iPhone7,2&ip=192.168.1.199&udid=&keyword=商城&callback=`,
-          {}
+          `/Ad/grabAd?id=${this.taskInfo.id}&ad=${this.taskInfo.ad_id}&channel=103&plan=${this.taskInfo.plan_detail_id}&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=ios10&devicemodel=iPhone7&udid=${localStorage.getItem("UDID")}&keyword=${this.taskInfo.keyword}&cookie=${localStorage.getItem("cookie")}&cookie_id=${localStorage.getItem("cookie_id")}&callback=`
         )
         .then(res => {
           Indicator.close();
@@ -356,7 +397,7 @@ export default {
             });
             //争抢成功后更新数据
             this.myAdList();
-            this.goMyTask(this.taskId)
+            this.goMyTask(this.taskId);
           } else {
             Toast({
               message: "争抢失败," + res.data.message,
@@ -367,11 +408,11 @@ export default {
         });
     },
     giveUpTaskBtn(list) {
-      let taskId = "";
-      taskId = list[0].id;
+      let taskInfo = "";
+      taskInfo = list[0];
       $http
         .get(
-          `/Ad/giveUpAd/id/${taskId}/?ad=1050&channel=103&plan=13&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=10.2&devicemodel=iPhone7,2&ip=192.168.1.199&udid=${localStorage.getItem("UDID")}&keyword=商城&callback=`
+          `/Ad/giveUpAd/id/${taskInfo.id}?&ad=${taskInfo.ad_id}&channel=103&plan=${taskInfo.plan_detail_id}&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=ios10&devicemodel=iPhone7&udid=${localStorage.getItem("UDID")}&keyword=${taskInfo.keyword}&cookie=${localStorage.getItem("cookie")}&cookie_id=${localStorage.getItem("cookie_id")}&callback=`
         )
         .then(res => {
           if (res.data.status == "1") {
@@ -383,13 +424,39 @@ export default {
             this.closeLayer();
             this.myAdList();
           } else {
+            Toast({
+              message: res.data.message,
+              position: "center",
+              duration: 2000
+            });
           }
         });
     },
 
     // 获取我的任务列表
     async myAdList() {
-      return $http.get("/Ad/getUserAdList").then(res => {
+      return $http
+        .get(
+          `/Ad/getUserAdList?cookie=${localStorage.getItem(
+            "cookie"
+          )}&cookie_id=${localStorage.getItem("cookie_id")}`
+        )
+        .then(res => {
+          if (res.data.status == "1") {
+            this.myTaskList = res.data.data;
+          } else {
+            Toast({
+              message: "请求任务列表失败",
+              position: "center",
+              duration: 2000
+            });
+          }
+        });
+    },
+
+    // 刷新任务
+    async resizeTask() {
+      return $http.get("/Ad/get_list_old/id/1 ").then(res => {
         if (res.data.status == "1") {
           this.myTaskList = res.data.data;
         } else {
@@ -420,6 +487,7 @@ export default {
           // 成功时出发的回调
           onVerify() {
             that.grubTaskAjax();
+            localStorage.setItem("code", true);
           }
         },
         function(instance) {
@@ -440,10 +508,6 @@ export default {
       return false;
     },
 
-    //邀请好友
-    shareBtn() {
-      //location.href = "http://file.weixinkd.com/ASO/1/232udid.mobileconfig";
-    },
     showLoading() {
       Indicator.open({
         text: "加载中",
@@ -452,6 +516,15 @@ export default {
       setTimeout(() => {
         Indicator.close();
       }, 2000);
+    },
+    setUDID() {
+      let UDID = localStorage.getItem("UDID");
+      // 验证设备完成
+      if (UDID) {
+        this.validate = false;
+      } else {
+        this.validate = true;
+      }
     }
   }
 };

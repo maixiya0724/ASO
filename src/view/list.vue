@@ -248,9 +248,9 @@ export default {
     logined() {
       // 开始检测登录状态  储存信息
 
-      if (this.params.token) {
-        localStorage.setItem("token", this.params.token);
-        localStorage.setItem("token_id", this.params.token_id);
+      if (this.params.cookie) {
+        localStorage.setItem("cookie", this.params.cookie);
+        localStorage.setItem("cookie_id", this.params.cookie_id);
       }
       if (this.params.UDID) {
         this.params.UDID ? localStorage.setItem("UDID", this.params.UDID) : "";
@@ -260,8 +260,8 @@ export default {
       this.$router.push({
         path: "home",
         query: {
-          token: localStorage.getItem("token"),
-          token_id: localStorage.getItem("token_id")
+          cookie: localStorage.getItem("cookie"),
+          cookie_id: localStorage.getItem("cookie_id")
         }
       });
     },

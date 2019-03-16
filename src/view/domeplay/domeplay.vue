@@ -18,8 +18,7 @@
         <div class="head_topCenter">
           <p class="head_topCenterText">
             任务奖励=
-            <span>{{taskInfo.price}}</span>元限时 +
-            <span>0.2</span>元
+            <span>{{taskInfo.price}}</span>元
           </p>
           <div class="downTime">剩余时间 {{downTimeNum}}</div>
         </div>
@@ -27,7 +26,6 @@
       <div class="detail_new_v2Text">
         <span>专属任务:</span>完成限时任务后,后续再打开
         <span>1</span>天,每天获得
-        <span>0.2</span>元
       </div>
       <div class="keyword_box">
         <img :src="taskInfo.thumb">
@@ -60,13 +58,23 @@
           @click="copy"
         >复制关键词</a>
       </div>
-      <div id="openApp" class="keyword_btn" @click="checkScoket(taskInfo.bundleid)">
-        <a style="">打开应用（必须在此打开）</a>
+      <div
+        id="openApp"
+        class="keyword_btn"
+        style="overflow:hidden;"
+        @click="checkScoket(taskInfo.bundleid)"
+      >
+        <a class="copy_keyword">打开应用（必须在此打开）</a>
       </div>
-      <div id="checkStatus" class="keyword_btn" style="overflow:scroll;margin: 0.93rem 0; " @click="checkTaskStatus">
+      <div id="checkStatus" class="keyword_btn" style="overflow:hidden;" @click="checkTaskStatus">
         <a class="border">检查完成状态</a>
       </div>
-      <div id="abortTask" class="keyword_btn no_style" @click="giveUpClick">
+      <div
+        id="abortTask"
+        class="keyword_btn no_style"
+        style="overflow:hidden;"
+        @click="giveUpClick"
+      >
         <a>放弃任务</a>
       </div>
     </div>
@@ -93,9 +101,9 @@
         </h4>
         <div id="gotoAppStore" class="keyword_btn" @click="goAppStore">前往AppStore</div>
         <p class="no_more_hint hint_gray not_tips">
-          <span class="on">
+          <!-- <span class="on">
             <img src="https://mirror.erbicun.cn/2018/images/tosat_icon_unchecked.png">
-          </span>
+          </span> -->
         </p>
       </div>
     </div>
@@ -117,7 +125,7 @@
               </i>
             </p>
           </div>
-          <div class="keyword_btn" @click="closeLayer">OK，继续赚钱</div>
+          <div class="keyword_btn" @click="goMainlist">OK，继续赚钱</div>
         </div>
       </div>
     </div>
@@ -155,7 +163,6 @@
         </div>
       </div>
     </div>
-
     <div class="keyBox" id="launch_key" v-if="openKey">
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
@@ -193,7 +200,6 @@
         </div>
       </div>
     </div>
-
     <div class="keyBox" v-if="trustKey" id="trust_key">
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
@@ -235,15 +241,15 @@
       </div>
     </div>
     <!-- 取消任务 -->
-    <div class="layer" v-if="validate" @click="closeLayer">
-            <div class="signDevive" >
-                <div class="signDeviveText">取消任务</div>
-                <div class="btns">
-                    <div class="signDeviveBtn">取消</div>
-                    <div class="signDeviveBtn" @click="giveUp">确定</div>
-                </div>
-            </div>
+    <div class="layer" v-show="layerShow" @click="closeLayer">
+      <div class="signDevive" @click.stop>
+        <div class="signDeviveText">确定要放弃任务"{{taskInfo.app_name}}吗?"</div>
+        <div class="btns">
+          <div class="signDeviveBtn" @click="closeLayer">取消</div>
+          <div class="signDeviveBtn" @click="giveUp">确定</div>
         </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -251,9 +257,7 @@ import Clipboard from "clipboard";
 import $http from "../../tool/url.js";
 import { Toast } from "mint-ui";
 import { Indicator } from "mint-ui";
-import { setTimeout } from 'timers';
-
-
+import { setTimeout } from "timers";
 
 export default {
   data() {
@@ -266,22 +270,45 @@ export default {
       successLayer: false,
       goOnLayer: false,
       openApp: false,
-      trustKey:false,
+      trustKey: false,
       downFiveTime: false,
-      downApp:false,
-      openKey:false,
+      downApp: false,
+      openKey: false,
       fiveTime: 5,
-      params:this.$route.query,
-      validate:false,
+      params: this.$route.query,
+      layerShow: false,
+      returnData: {},
+      count_down: ""
     };
   },
   mounted() {
     this.getInfo();
     this.copy();
   },
-  destroyed(){
-    
+  destroyed() {},
+  watch: {
+    count_down: function(newValue, oldValue) {
+      if (newValue < 0) {
+        Toast({
+          message: "任务时间到,任务失败",
+          position: "center",
+          duration: 2000
+        });
+
+        setTimeout(() => {
+          this.giveUp();
+          this.$router.push({
+            path: "/mainlist",
+            query: {
+              cookie: localStorage.getItem("cookie"),
+              cookie_id: localStorage.getItem("cookie_id")
+            }
+          });
+        }, 2000);
+      }
+    }
   },
+
   methods: {
     closeLayer() {
       this.copyText = false;
@@ -289,21 +316,29 @@ export default {
       this.goOnLayer = false;
       this.openApp = false;
       this.trustKey = false;
-      this.downApp=false;
-      this.openKey=false;
-      this.validate=false;
+      this.downApp = false;
+      this.openKey = false;
+      this.layerShow = false;
+    },
+    goMainlist(){
+          this.$router.push({
+            path: "/mainlist",
+            query: {
+              cookie: localStorage.getItem("cookie"),
+              cookie_id: localStorage.getItem("cookie_id")
+            }
+          });
     },
 
-     checkScoket(bundleid) {
-       console.log(window.newWebsocket.readyState )
-        if (window.newWebsocket.readyState != "1") {
-            this.openKey = true;
-          }else{
-            this.inspectDome(bundleid)
-          }
-      },
-  
-     // 下载钥匙
+    checkScoket(bundleid) {
+      if (window.newWebsocket.readyState == "1") {
+        this.inspectDome(bundleid);
+      } else {
+        this.openKey = true;
+        console.log(window.newWebsocket.readyState, "第一次检测");
+      }
+    },
+    // 下载钥匙
     downloadKey() {
       // 下载钥匙应用
       this.openKey = false;
@@ -317,7 +352,7 @@ export default {
         }
       }, 1000);
     },
-     download_app() {
+    download_app() {
       this.downApp = false;
       this.trustKey = true;
       // 倒计时去信任
@@ -333,41 +368,47 @@ export default {
     closeDownloadKey() {
       this.downApp = false;
     },
-     callApp: function() {
+    callApp: function() {
       let IosUrl = "CYRead://";
       location.href = IosUrl;
     },
 
-
     inspectDome(bundleid) {
-      console.log(bundleid)
-
       let that = this;
       this.trustKey = false;
-
+      console.log(that.taskInfo.id)
+      if (window.newWebsocket.readyState == "1") {
         window.newWebsocket.send(
           JSON.stringify({
-              action: "isopenApp",
-              appBuddleId: bundleid,
-              appId:"1",
-              needTime:1,//不需要0 需要 1;
-            })
+            action: "isopenApp",
+            appBuddleId: bundleid,
+            appId:that.taskInfo.id,
+            needTime: 1 //不需要0 需要 1;
+          })
         ); // 发送参数到客户端
-        
-         window.newWebsocket.onmessage = function(event) {
-          if (event.data.isInstall == "0") {
-            alert(1)
+
+        window.newWebsocket.onmessage = function(event) {
+          console.log(event);
+          console.log(event.data);
+
+          if (
+            JSON.parse(event.data).isInstall == "0" &&
+            JSON.parse(event.data).isInstall
+          ) {
             //未安装
-             Toast({
-              message: "请先去下载该app",
+            Toast({
+              message: "应用未安装,请安装后打开",
               position: "center",
               duration: 2000
             });
           } else {
             //已安装 打开app
           }
-        }
-
+        };
+      } else {
+        console.log(window.newWebsocket.readyState, "第二次检测");
+        this.openKey = true;
+      }
     },
 
     //不再提示
@@ -386,9 +427,10 @@ export default {
         }
       });
     },
-    getTime: function getEndTime(endTime) {
-      var startDate = new Date(); //开始时间，当前时间
-      var t = endTime * 1000 - startDate.getTime(); //时间差的毫秒数
+    getTime: function(endTime) {
+      var startDate = new Date().getTime();
+      var t = endTime * 1000 - startDate; //时间差的毫秒数
+      this.count_down = t;
       var d = 0,
         h = 0,
         m = 0,
@@ -413,43 +455,51 @@ export default {
     downTimeFn: function(time) {
       clearInterval(timer);
       var timer = setInterval(() => {
-        this.downTimeNum = this.getTime(this.taskInfo.end_time);
+        if (this.count_down < 0) {
+          clearInterval(timer);
+        }
+        this.downTimeNum = this.getTime(this.taskInfo.count_down);
+        //this.downTimeNum = this.getTime(12323232689783);
       }, 1000);
     },
     //获取任务详情
     async getInfo() {
-      return $http.get(`/Ad/getDetail/id/${this.params.id}`).then(res => {
-
-        if (res.data.status == "1") {
-          this.taskInfo = res.data.data;
-
-          this.copyValue = res.data.data.keyword;
-          this.downTimeFn();
-        } else {
-          console.log("请求数据错误");
-        }
-      });
+      return $http
+        .get(
+          `/Ad/getDetail?id=${this.params.id}&cookie=${localStorage.getItem(
+            "cookie"
+          )}&cookie_id=${localStorage.getItem("cookie_id")}`
+        )
+        .then(res => {
+          if (res.data.status == "1") {
+            this.taskInfo = res.data.data;
+            this.copyValue = res.data.data.keyword;
+            if (this.taskInfo.count_down) {
+              this.downTimeFn();
+            }
+          } else {
+            console.log("请求数据错误");
+          }
+        });
     },
-   
+
     //激活接口 检查用户任务状态
     checkTaskStatus() {
-      let param = {
-        id:this.taskInfo.id,
-        need_play_time:"1",
-        ad: "1007",
-        channel: "103",
-        plan: "7",
-        idfa: "G229697E-7F09-4I02-A9E7-418G68742652",
-        systemversion:"",
-        devicemodel:"",
-        udid:"5cd037f3baea401cfb9b85097124f187b2bddea4",
-        keyword:"音乐"
-      };
-      console.log(param)
-      $http.post(`/Ad/activeAd`,param).then(res => {
+
+      var url = `need_play_time=1&id=${this.taskInfo.id}&ad=${this.taskInfo.ad_id}&channel=103&plan=${this.taskInfo.plan_detail_id}&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=ios10&devicemodel=iPhone7&udid=${localStorage.getItem("UDID")}&keyword=${this.taskInfo.keyword}&cookie=${localStorage.getItem("cookie")}&cookie_id=${localStorage.getItem("cookie_id")}&callback=`
+
+      $http.get(`/Ad/activeAd?${url}`).then(res => {
         if (res.data.status == "1") {
+          // 任务完成
+          this.successLayer = true;
+        } else if (res.data.status == "2") {
+          // 任务未完成
+          this.goOnLayer = true;
+
+        } else {
+
           Toast({
-            message: "检查用户状态",
+            message: res.data.message,
             position: "center",
             duration: 2000
           });
@@ -457,28 +507,35 @@ export default {
       });
     },
     //放弃任务
-    giveUp(){
-      $http.get(`/Ad/giveUpAd/id/${this.params.id}?ad=1050&channel=103&plan=13&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=10.2&devicemodel=iPhone7,2&ip=192.168.1.199&udid=${localStorage.getItem("UDID")}&keyword=商城&callback=`).then(res=>{
-        if(res.data.status=="1"){
+    giveUp() {
+      $http
+        .get(
+          `/Ad/giveUpAd?id=${this.taskInfo.id}&ad=${this.taskInfo.ad_id}&channel=103&plan=${this.taskInfo.plan_detail_id}&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=ios10&devicemodel=iPhone7&udid=${localStorage.getItem("UDID")}&keyword=${this.taskInfo.keyword}&cookie=${localStorage.getItem("cookie")}&cookie_id=${localStorage.getItem("cookie_id")}&callback=`
+        )
+        .then(res => {
+          if (res.data.status == "1") {
             Toast({
               message: "放弃任务成功",
               position: "center",
               duration: 2000
             });
-            this.$router.go(-1)
-        }else{
-
-        }
-      })
+            this.$router.go(-1);
+          } else {
+            Toast({
+              message: res.data.message,
+              position: "center",
+              duration: 2000
+            });
+          }
+        });
     },
-    giveUpClick(){
-      this.validate=true;
-      this.closeLayer();
+    giveUpClick() {
+      this.layerShow = true;
     },
-    goAppStore(){
-      location.href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/search?mt=8#software"
+    goAppStore() {
+      location.href =
+        "https://itunes.apple.com/WebObjects/MZStore.woa/wa/search?mt=8#software";
     }
-    
   }
 };
 </script>
@@ -500,6 +557,10 @@ export default {
   margin: 0 auto;
   position: relative;
   top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
 }
 .head_topCenterText {
@@ -507,7 +568,6 @@ export default {
   text-align: center;
   color: #333;
   font-size: 16px;
-  margin-top: 0.8rem;
   span {
     font-size: 20px;
   }
@@ -557,14 +617,14 @@ export default {
 }
 
 .signDevive {
-  width: 6*3.125rem;
-  padding: 0.2*3.125rem;
+  width: 6 * 3.125rem;
+  padding: 0.2 * 3.125rem;
   background: #fff;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 0.2*3.125rem;
+  border-radius: 0.2 * 3.125rem;
   overflow: hidden;
   z-index: 100;
   .signDeviveText {
@@ -572,20 +632,20 @@ export default {
     color: #000;
     text-align: center;
     position: relative;
-    top: 0.2*3.125rem;
+    top: 0.2 * 3.125rem;
   }
   .btns {
     width: auto;
-    height: 0.3*3.125rem;
-    margin: 0.4*3.125rem;
+    height: 0.3 * 3.125rem;
+    margin: 0.4 * 3.125rem;
     display: flex;
     justify-content: flex-end;
     position: relative;
-    top: 0.2*3.125rem;
-    .signDeviveBtn{
-        font-size: 16px;
-        color: #fe6631;
-        margin-left: 0.5*3.125rem;
+    top: 0.2 * 3.125rem;
+    .signDeviveBtn {
+      font-size: 16px;
+      color: #fe6631;
+      margin-left: 0.5 * 3.125rem;
     }
   }
 }
@@ -596,7 +656,7 @@ export default {
   left: 0;
   top: 0;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 100;
+  z-index: 99;
 }
 </style>
 

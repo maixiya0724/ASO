@@ -2,144 +2,80 @@
   <!-- 收入明细 -->
   <div class="record">
     <div class="header">
-        <a class="goBack" href="javascript:history.back(-1)">
-          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_left_arrow.png" alt="">
-        </a>
-        <div class="headerTitle">收徒明细</div>
-        <div class="resize">
-          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_refresh.png" alt="">
-        </div>
+      <a class="goBack" href="javascript:history.back(-1)">
+        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png" alt="">
+      </a>
+      <div class="headerTitle">收入明细</div>
+      <div class="resize">
+        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png" alt="">
       </div>
-    <div
-      class="main"
-      v-infinite-scroll="loadMore"
-      infinite-scroll-disabled="loading"
-      infinite-scroll-distance="10"
-    >
+    </div>
+    <!-- 等待开发 -->
+    <div class="main">
       <div class="list">
-        <p class="tc_time">2019-02-14</p>
         <div class="itemList">
-          <div class="item rowFlex columnCenter">
+          <div class="item rowFlex columnCenter" v-for="(item,index) in dataList" :key="index">
             <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
+              <img :src="item.thumb" alt="">
             </div>
             <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
+              <p class="money">+{{item.price}}</p>
+              <p class="textInfo">完成{{item.app_name}}任务</p>
             </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
-          </div>
-        </div>
-        <div class="itemList">
-          <div class="item rowFlex columnCenter">
-            <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
-            </div>
-            <div class="itemText">
-              <p class="money">+1元</p>
-              <p class="textInfo">完胜发放大法发顺丰范德萨发 发</p>
-            </div>
-            <div class="itemTime">13:59</div>
+            <div class="itemTime">{{item.newcompleted_time}}</div>
           </div>
         </div>
       </div>
       <p class="timeInfo">仅显示最近三个月的记录</p>
-      <div class="loadMore" v-if="loadMoreData">
-        <div class="loadImage"></div>
-        <span>加载中</span>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { InfiniteScroll } from "mint-ui";
-import Vue from "vue";
-
+import $http from "../../tool/url.js";
+import { Toast } from "mint-ui";
 export default {
   data() {
     return {
-      loadMoreData: false
+      loadMoreData: false,
+      dataList: [],
+      timer: ""
     };
   },
+  mounted() {
+    this.getAdList();
+
+    this.timer = this.setTime(1552636845);
+  },
   methods: {
-    // 加载更多
-    loadMore() {
-      this.loading = true;
-      this.loadMoreData = true;
-      console.log(1);
+    getAdList() {
+      $http
+        .get(
+          `/Ad/getUserTaskDetails?cookie=${localStorage.getItem(
+            "cookie"
+          )}&cookie_id=${localStorage.getItem("cookie_id")}`
+        )
+        .then(res => {
+          if (res.data.status == "1") {
+            this.dataList = res.data.data;
+
+            this.dataList.map((item,index)=>{
+              if(item.completed_time){
+                  item.newcompleted_time = this.setTime(item.completed_time)
+              }
+            })
+
+          } else {
+            Toast({
+              message: "请求数据错误",
+              position: "center",
+              duration: 2000
+            });
+          }
+        });
+    },
+    setTime(timer) {
+      return new Date(parseInt(timer) * 1000).toLocaleString().replace(/:\d{1,2}$/,' '); 
     }
   }
 };
@@ -277,10 +213,10 @@ export default {
       }
     }
     .itemTime {
-      width: 1 * 3.125rem;
-      height: 1 * 3.125rem;
+      width:auto;
+      height: 100%;
       text-align: center;
-      line-height: 1.6 * 3.125rem;
+      line-height: 1.8 * 3.125rem;
       color: #666;
       float: right;
       position: absolute;
@@ -291,6 +227,38 @@ export default {
   }
 }
 
+// 开发中
+.noInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.record {
+  background: #fff;
+}
+
+.noDataImg {
+  width: 18rem;
+  height: 18rem;
+  margin-top: 2rem;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+.noInfoTitle {
+  font-size: 20px;
+  color: #000;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+.noInfoInfo {
+  font-size: 15px;
+  color: #999;
+  margin-top: 0.4rem;
+}
 // new
 </style>
 

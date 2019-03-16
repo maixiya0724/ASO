@@ -10,7 +10,18 @@
         <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png" alt="">
       </div>
     </div>
-    <div
+     <div class="noInfo">
+        <div class="noDataImg">
+          <img src="http://file.weixinkd.com/ASO/img/img.png" alt="">
+        </div>
+        <div class="noInfoTitle">敬请期待...</div>
+        <div class="noInfoInfo">更多功能正在开发中</div>
+      </div>
+
+
+
+    <!-- 有数据 -->
+    <!-- <div
       class="main"
       v-infinite-scroll="loadMore"
       infinite-scroll-disabled="loading"
@@ -30,7 +41,7 @@
         <div class="loadImage"></div>
         <span>加载中</span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -234,6 +245,40 @@ export default {
   width: 100%;
   height: auto;
   padding: 0 0.2 * 3.125rem;
+}
+
+// 没有数据
+
+.noInfo{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+}
+
+.record{
+  background: #fff;
+}
+
+.noDataImg {
+  width: 18rem;
+  height: 18rem;
+  margin-top: 2rem;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+.noInfoTitle{
+  font-size: 20px;
+  color: #000;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+.noInfoInfo{
+  font-size: 15px;
+  color: #999;
+  margin-top: 0.4rem;
 }
 
 // new

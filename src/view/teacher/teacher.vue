@@ -1,17 +1,34 @@
 <template>
-<div class="noInfo">
-  敬请期待
-</div>
+  <div class="main">
+    <div class="header">
+      <a class="goBack" href="javascript:history.back(-1)">
+        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png" alt="">
+      </a>
+      <div class="headerTitle">收徒赚钱</div>
+      <div class="resize">
+        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png" alt="">
+      </div>
+    </div>
+    <div class="noInfo">
+      <div class="noDataImg">
+        <img src="http://file.weixinkd.com/ASO/img/img.png" alt="">
+      </div>
+      <div class="noInfoTitle">敬请期待...</div>
+      <div class="noInfoInfo">更多功能正在开发中</div>
 
-  <!-- <div class="teacher">
+    </div>
+  </div>
+  <!-- 
+   <div class="teacher">
     <div class="header">
       <a href="javascript:history.back(-1)">
         <div class="headerLeft"></div>
       </a>
       <div class="headerCenter">收徒明细</div>
-      <div class="appList" @click="goTuList">徒弟列表</div>
+     <div class="appList" @click="goTuList">徒弟列表</div>
     </div>
-    <div class="teacherTitle"></div>
+ 
+       <div class="teacherTitle"></div>
     <div class="teacherSubTitle">每收徒1人赚 20 元现金</div>
     <div class="teacherMain">
       <div class="mainTitle">
@@ -103,7 +120,7 @@
         <div class="copyBtn" @click="copy" id="copy_keyword" :data-clipboard-text="copyValue">复制链接</div>
       </div>
     </div>
-  </div> -->
+  </div>-->
 </template>
 <script>
 import Clipboard from "clipboard";
@@ -122,7 +139,7 @@ export default {
         value: "https://www.baidu.com",
         logo: ""
       },
-      userInfo:{}
+      userInfo: {}
     };
   },
   components: {
@@ -130,7 +147,6 @@ export default {
   },
   mounted() {},
   methods: {
-
     // 显示分享弹窗
     showShare() {
       this.shareType = true;
@@ -167,28 +183,27 @@ export default {
       });
     },
     //去徒弟列表
-    goTuList(){
-        this.$router.push({path:"/teacherDe",query:{uid:"2"}})
+    goTuList() {
+      this.$router.push({ path: "/teacherDe", query: { uid: "2" } });
     },
     // 获取收徒详情
-    async getInfo(){
-        return $http.post("/WebApi/User/getUserInfo",{id:"3"}).then((res)=>{
-            if(res.data.status=="1"){
-                this.userInfo =  res.data.data
-            }else{
-                console.log("请求数据错误")
-            }
-        })
+    async getInfo() {
+      return $http.post("/WebApi/User/getUserInfo", { id: "3" }).then(res => {
+        if (res.data.status == "1") {
+          this.userInfo = res.data.data;
+        } else {
+          console.log("请求数据错误");
+        }
+      });
     }
-    
   }
 };
 </script>
 <style lang="less" scoped>
-.noInfo{
+.noInfo {
   width: 100%;
   height: 100%;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   color: #000;
@@ -283,6 +298,7 @@ export default {
     }
   }
 }
+
 .teacher {
   width: 100%;
   height: 100%;
@@ -320,6 +336,7 @@ export default {
       line-height: 0.5 * 3.125rem;
     }
   }
+
   .teacherTitle {
     width: 5.9 * 3.125rem;
     height: 0.9 * 3.125rem;
@@ -534,6 +551,66 @@ export default {
       }
     }
   }
+}
+
+.header {
+  width: 100%;
+  height: 0.9 * 3.125rem;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.3 * 3.125rem;
+  .goBack {
+    width: 0.45 * 3.125rem;
+    height: 0.45 * 3.125rem;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .headerTitle {
+    font-size: 16px;
+    color: #000;
+  }
+  .resize {
+    width: 0.42 * 3.125rem;
+    height: 0.42 * 3.125rem;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+// 没有数据
+
+.noInfo{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+}
+
+.noDataImg {
+  width: 18rem;
+  height: 18rem;
+  margin-top: 2rem;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+.noInfoTitle{
+  font-size: 20px;
+  color: #000;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+.noInfoInfo{
+  font-size: 15px;
+  color: #999;
+  margin-top: 0.4rem;
 }
 </style>
 

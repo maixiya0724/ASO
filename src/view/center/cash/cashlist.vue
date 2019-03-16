@@ -72,11 +72,7 @@ export default {
         if(res.data.status=="1"){
           this.dataList= res.data.data
         }else{
-          Toast({
-              message:res.data.msg,
-              position: "center",
-              duration: 2000
-            });
+          
         }
       })
     },

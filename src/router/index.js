@@ -21,6 +21,8 @@ import CashZfb from "../view/center/cash/cashZfb.vue"
 import CashWx from "../view/center/cash/cashWx.vue"
 import BindWx from "../view/center/bindWx.vue"
 import WxQr from "../view/center/wxQr.vue"
+import Affairs from "../view/center/affairs.vue"
+
 
 Vue.use(Router)
 export default new Router({
@@ -131,6 +133,11 @@ export default new Router({
       path:'/main',
       name:'main',
       component:Main,
+    },
+    {
+      path:'/affairs',
+      name:'affairs',
+      component:Affairs,
     }
   ]
 })

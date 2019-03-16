@@ -23,7 +23,7 @@
         </p>
         <div class="footer_btn">
           <button class="no_modification" id="confirm_bind">当前不可修改</button>
-          <p class="anew_binding">温馨提示：2019年03月15日之后才可以重新绑定手机号</p>
+          <!-- <p class="anew_binding">温馨提示：2019年03月15日之后才可以重新绑定手机号</p> -->
         </div>
       </div>
       <!--未绑定手机-->
@@ -41,7 +41,7 @@
         </div>
         <div class="footer_btn">
           <button id="confirm_bind" @click="launchCash">绑定手机号</button>
-          <p class="anew_bindingTwo">温馨提示:每个月只能绑定一次手机号</p>
+          <!-- <p class="anew_bindingTwo">温馨提示:每个月只能绑定一次手机号</p> -->
         </div>
       </div>
     </div>
@@ -68,10 +68,13 @@ export default {
       count: '',
       timer: null,
       userInfo:{},
+      month:"",
+      day:""
     };
   },
   mounted() {
     this.getUserInfo()
+    
   },
   methods: {
     checkPhone() {
@@ -105,6 +108,16 @@ export default {
       
     },
     getCode(){
+
+    if (!this.checkPhone()) {
+        Toast({
+          message: "请输入正确的手机号",
+          position: "center",
+          duration: "2000"
+        });
+        return false;
+      }
+      
     this.requestCode()
 
      const TIME_COUNT = 60;
@@ -131,7 +144,14 @@ export default {
               position: "center",
               duration: 2000
             });
+       }else{
+         Toast({
+              message: res.data.msg,
+              position: "center",
+              duration: 2000
+          });
        }
+       
      })
    },
    bindPhoneFn(){
@@ -142,6 +162,9 @@ export default {
               position: "center",
               duration: 2000
             });
+            
+            this.getUserInfo()
+
        }else{
          Toast({
               message:res.data.msg,

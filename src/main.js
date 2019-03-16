@@ -21,31 +21,3 @@ new Vue({
   template: '<App/>'
 })
 
-
-
-// Vue.prototype.webScoket = function(){
-//     window.WebSocket = window.WebSocket || window.MozWebSocket;
-//     new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
-// }
-
-
-
-
-// hybridApp() {
-//   let that = this;
-//   window.WebSocket = window.WebSocket || window.MozWebSocket;
-//   this.websocket = new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
-
-//   this.websocket.onopen = function() {
-//     //连接客户端触发的函数
-//     console.log("打开成功");
-//   };
-//   if (this.websocket.readyState != "1") {
-//     that.openKey = true;
-//   }
-//   this.websocket.onerror = function() {
-//     //链接失败就打开重新下载的弹窗
-//     console.log("链接失败");
-    
-//   };
-// },

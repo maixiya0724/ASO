@@ -2,15 +2,29 @@
   <!-- 收入明细 -->
   <div class="record " >
       <div class="header">
-        <a class="goBack" href="javascript:history.back(-1)">
-          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_left_arrow.png" alt="">
-        </a>
-        <div class="headerTitle">收徒明细</div>
-        <div class="resize">
-          <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_refresh.png" alt="">
-        </div>
+      <a class="goBack" href="javascript:history.back(-1)">
+        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_left_arrow.png" alt="">
+      </a>
+      <div class="headerTitle">收徒明细</div>
+      <div class="resize">
+        <img src="https://mirror.erbicun.cn/2018/images/task_list_btn_refresh.png" alt="">
       </div>
-      <!-- tablist -->
+    </div>
+
+
+      <div class="noInfo">
+        <div class="noDataImg">
+          <img src="http://file.weixinkd.com/ASO/img/img.png" alt="">
+        </div>
+        <div class="noInfoTitle">敬请期待...</div>
+        <div class="noInfoInfo">更多功能正在开发中</div>
+      </div>
+
+
+
+
+  <!-- 有数据 -->
+<!--       
       <div class="tabList">
           <div  :class="tabItemActive?'tabItem':'tabItemActive'" @click="tabItemActive=false"><span>收徒明细</span></div>
           <div  :class="!tabItemActive?'tabItem':'tabItemActive'" @click="tabItemActive=true"><span>收徒奖励</span></div>
@@ -46,7 +60,7 @@
       </div>
     </div>
 
-    <!-- 第二个tab -->
+
     <div v-if="tabItemActive"
       class="main"
       v-infinite-scroll="loadMore"
@@ -79,7 +93,7 @@
 
       </div>
       
-    </div>
+    </div> -->
     
     
   </div>
@@ -359,6 +373,45 @@ export default {
   //  返回数组的问题，分页问题，不是绑定的师徒关系的问题
 
 // new
+
+
+
+
+// 没有数据
+
+.noInfo{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+}
+
+.record{
+  background: #fff;
+  width: 100%;
+  height: 92%;
+}
+
+.noDataImg {
+  width: 18rem;
+  height: 18rem;
+  margin-top: 2rem;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+.noInfoTitle{
+  font-size: 20px;
+  color: #000;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+.noInfoInfo{
+  font-size: 15px;
+  color: #999;
+  margin-top: 0.4rem;
+}
 </style>
 
 

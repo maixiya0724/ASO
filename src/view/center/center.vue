@@ -120,7 +120,7 @@
                             <img src="https://res.youth.cn/ASO/img/list2_icon.png" class="left_icon">
                         </div>
                         <div class="pc_right_box">
-                            <span class="list_text">关注微信</span>
+                            <span class="list_text">商务客服</span>
                             <div class="right_icon">
                                 <span class="right_text">联系客服</span>
                                 <img class="jiantou"
@@ -229,32 +229,32 @@ export default {
   },
   methods: {
     goCash() {
-      this.$router.push({ path: "/cash", query: {total:this.userInfo.total_score},token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")});
+      this.$router.push({ path: "/cash", query: {total:this.userInfo.total_score,cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")}});
     },
     taskDetails() {
-      this.$router.push({ path: "/cash", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/cash", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     goRecord() {
-      this.$router.push({ path: "/record", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/record", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     goTeacherDe() {
-      this.$router.push({ path: "/teacherDe", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/teacherDe", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     goCashDe() {
-      this.$router.push({ path: "/cashlist", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/cashlist", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     goProblem() {
-      this.$router.push({ path: "/problem", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/problem", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     goBindPhone() {
-      this.$router.push({ path: "/bindphone", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/bindphone", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     goBindWx() {
-      this.$router.push({ path: "/bindWx", query: {token:localStorage.getItem("token"),token_id:localStorage.getItem("token_id")} });
+      this.$router.push({ path: "/affairs", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
     },
     async getUserInfo() {
       return httpUrl
-        .post("/WebApi/User/getUserInfo", { uid: 1232 })
+        .post("/WebApi/User/getUserInfo")
         .then(res => {
           if (res.data.status == "1") {
             this.userInfo = res.data.data;

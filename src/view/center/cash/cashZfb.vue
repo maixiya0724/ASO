@@ -64,24 +64,18 @@
                 </div>
                 <div class="aw_withdrawal_instruction">
                     <p class="instruction">提现须知</p>
+                   
                     <div class="instruction_list">
                         1、
-                        <span class="ai_red">支付宝提现10元需扣除1元手续费，20元扣0.5元手续费，30元及以上免手续费</span>
-                    </div>
-                    <div class="instruction_list">
-                        2、
                         <span>周一至周五17:00之前提现，24小时之内到账；周五17:00-24:00以及周六日提现，下周一到账；节假日提现，顺延至工作日到账</span>
                     </div>
+                  
                     <div class="instruction_list">
-                        3、
-                        <span>返还的金币或现金，将在提现成功之后打入您的账户</span>
-                    </div>
-                    <div class="instruction_list">
-                        4、
+                        2、
                         <span>每天只能提现一次</span>
                     </div>
                     <div class="instruction_list">
-                        5、
+                        3、
                         <span>若您没有更换支付宝账号，请不要修改账号</span>
                     </div>
                 </div>
@@ -136,12 +130,12 @@ export default {
   data() {
     return {
       cashList: [
-        { ID: "0", num: "10", info: "不返金币" },
-        { ID: "1", num: "20", info: "不返金币" },
-        { ID: "2", num: "30", info: "返300金币" },
-        { ID: "3", num: "50", info: "返500金币" },
-        { ID: "4", num: "100", info: "返1000金币" },
-        { ID: "5", num: "500", info: "返5元现金" },
+        { ID: "0", num: "10", info: "" },
+        { ID: "1", num: "20", info: "" },
+        { ID: "2", num: "30", info: "" },
+        { ID: "3", num: "50", info: "" },
+        { ID: "4", num: "100", info: "" },
+        { ID: "5", num: "500", info: "" },
       ],
       zIndex: "",
       bindPhone: "",
@@ -156,7 +150,7 @@ export default {
   methods: {
     //选择提现金额
     selectIndex(index) {
-      console.log(index)
+
       this.zIndex = index;
       
     },
@@ -201,14 +195,15 @@ export default {
         return false;
       }
 
-      if (this.cashList[this.zIndex].num > this.params.total) {
-        Toast({
-          message: "请选择正确的提现金额",
-          position: "center",
-          duration: "2000"
-        });
-        return false;
-      }
+      // if (this.cashList[this.zIndex].num > this.params.total) {
+      //   Toast({
+      //     message: "请选择正确的提现金额",
+      //     position: "center",
+      //     duration: "2000"
+      //   });
+      //   return false;
+      // }
+      
       // 发起提现请求
       let param = {
           num:this.cashList[this.zIndex].num,
@@ -238,7 +233,7 @@ export default {
       })
     },
     getZfhInfo(){
-      $http.post("WebApi/alipay/getAlipayInfo").then(res=>{
+      $http.post("/WebApi/alipay/getAlipayInfo").then(res=>{
         if(res.data.status=="1"){
             if(res.data.data.alipay){
               this.bindPhone = res.data.data.alipay
@@ -264,8 +259,8 @@ export default {
   align-items: center;
 }
 .money_select_listActive {
-  border: 1px solid#fe6631;
-  color: #fe6631;
+  border: 1px solid#fe6631 !important;
+  color: #fe6631 !important;
 }
 </style>
 

@@ -187,15 +187,18 @@ export default {
     };
   },
   created() {
-    this.logined();
+    
   },
   
   mounted() {
     this.adList();
+    setTimeout(()=>{
+      this.logined();
+    },1000)
   },
   
   methods: {
-    // 检查本地状态获取token
+    // 检查本地状态获取cookie
 
     async adList() {
       return $http.get("/Ad/getList").then(res => {
@@ -225,20 +228,24 @@ export default {
       // 之前信任过
       if (localStorage.getItem("trustKey")) {
         this.openKey = true;
-
         // 为信任过
       } else {
         this.downApp = true;
       }
     },
+    checkScoket(item) {
+        if (window.newWebsocket.readyState == "1") {
+          this.callAppAction();
+        }else{
+          console.log(window.newWebsocket.readyState)
+          this.openKey = true;
+        }
+    },
     logined() {
-      if (!localStorage.getItem("token")) {
-        setTimeout(res => {
-          this.hybridApp();
-          
-        }, 2000);
+      if (!localStorage.getItem("cookie")) {
+         this.checkScoket()
       }else{
-        this.$router.push({ name: "home", params: this.params });
+        this.$router.push({ name: "home", query:{cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
       }
     },
     // 调取原生app
@@ -246,42 +253,23 @@ export default {
       let IosUrl = "CYRead://";
       location.href = IosUrl;
     },
-    hybridApp() {
-      let that = this;
-      window.WebSocket = window.WebSocket || window.MozWebSocket;
-      this.websocket = new WebSocket("ws://127.0.0.1:9000", "echo-protocol");
-
-      Indicator.open({
-        text: "正在链接钥匙"
-      });
-      setTimeout(() => {
-        Indicator.close();
-      });
-      this.websocket.onopen = function() {
-        //连接客户端触发的函数
-        console.log("打开成功");
-        this.callAppAction()
-      };
-      this.websocket.onerror = function() {
-        //链接失败就打开重新下载的弹窗
-        console.log("链接失败");
-        //that.openKey = true;
-      };
-    },
+    
     // 打开app 如果未打开 实现跳转
     callAppAction: function() {
       let that = this;
       this.trustKey = false;
-      this.websocket.send(
+      window.newWebsocket.send(
         JSON.stringify({
           action: "Obtain",
         })
       ); // 发送参数到客户端
       
-      this.websocket.onmessage = function(event) {
-        console.log(event.data, "回调");
-        this.isInstall = event.data.install;
-        console.log(this.isInstall)
+      window.newWebsocket.onmessage = function(event) {
+        let returnObj = JSON.parse(event.data)
+        console.log(event.data, "返回信息");
+        if(returnObj.cookie){
+          this.$router.push({ name: "home", query:{cookie:returnObj.cookie,cookie_id:returnObj.cookie_id} });
+        }
       };
     },
 
