@@ -132,11 +132,11 @@ export default {
         if(res.data.status=="1"){
             this.inviteList = res.data.data.list
         }else{
-          Toast({
-            message:res.data.msg,
-            position: "center",
-            duration: 2000
-          });
+          // Toast({
+          //   message:res.data.msg,
+          //   position: "center",
+          //   duration: 2000
+          // });
         }
       })
     },
@@ -145,11 +145,7 @@ export default {
         if(res.data.status=="1"){
             this.rewardList= res.data.data.list
         }else{
-          Toast({
-            message:res.data.msg,
-            position: "center",
-            duration: 2000
-          });
+          
         }
       })
     },
