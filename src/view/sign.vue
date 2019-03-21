@@ -100,7 +100,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .signCenter {
   width: 100%;
   height: 3.4*3.125rem;

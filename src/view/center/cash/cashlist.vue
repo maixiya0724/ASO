@@ -1,6 +1,6 @@
 <template>
   <!-- 收入明细 -->
-  <div class="record " >
+  <div class="record "  >
       <div class="header">
         <a class="goBack" href="javascript:history.back(-1)">
           <img src="https://mirror.erbicun.cn/2018/images/task_details_btn_left_arrow.png" alt="">
@@ -19,17 +19,27 @@
       infinite-scroll-distance="10" v-if="dataList.length>0"
     >
       <div class="list">
-        <p class="tc_time">2019-02-14</p>
+       
         <div class="itemList">
-          <div class="item rowFlex columnCenter">
+          <div class="item rowFlex columnCenter" v-for="(item,index) in dataList" :key="index" @click="goDetails(item)">
             <div class="itemImg">
-              <img src="https://mirror.erbicun.cn/2018/images/my_task_exclusive.png" alt="">
+              <!-- <img src="https://res.youth.cn/ASO/weixinIcon.png" alt=""> -->
+              <img v-if="item.logo=='alipay'"  src="https://res.youth.cn/ASO/zhiFuBao.png" alt="">
+              <img v-if="item.logo!='alipay'"  src="https://res.youth.cn/ASO/weixinIcon.png" alt="">
+
             </div>
             <div class="itemText">
-              <p class="money">提现</p>
-              <p class="textInfo">支付宝提现10元,消耗10元</p>
+              <p class="money">{{item.title}}</p>
+              <p class="textInfo">{{item.desc}}</p>
             </div>
-            <div class="itemTime">提现失败</div>
+            <div  class="itemTime" style="color:#fe6631;">
+              <span v-if="item.status=='0'"  class="status">提现中</span>
+              <span v-if="item.status=='1'" style="color:green;" class="status">提现成功</span>
+              <span v-if="item.status=='2'" class="status">提现失败</span>
+              <span v-if="item.status=='3'" class="status">提现失败</span>
+              <span class="time">{{item.time}}</span>
+              </div>
+
           </div>
         </div>
       </div>
@@ -53,29 +63,46 @@ export default {
     return {
       loadMoreData:false,
       dataList:[],
+      pageIndex:1,
+      nextpage:"",
     };
   },
   mounted(){
-    this.getRequestList()
-
+    this.getRequestList(this.pageIndex)
   },
   methods: {
     // 加载更多
     loadMore() { 
-      this.loading = true;
-      this.loadMoreData=true;
-      console.log(1)
+       if(this.nextpage!="0"){
+        this.loadMoreData=true;
+        this.pageIndex++;
+        this.getRequestList(this.pageIndex)
+       }else{
+         console.log("没有数据了")
+       }
     },
-    getRequestList(){
-      $http.get("/WebApi/User/getInviteReward",{page:1}).then(res=>{
+    getRequestList(pageNum){
+      $http.get("/WebApi/Order/getList",{page:pageNum}).then(res=>{
         console.log(res)
         if(res.data.status=="1"){
-          this.dataList= res.data.data
+          //this.dataList= res.data.data.list
+          this.nextpage = res.data.data.nextpage;
+          for(let k=0;k<res.data.data.list.length;k++){
+            this.dataList.push(res.data.data.list[k])
+          }
+
+          // for(let i=0;i<20;i++){
+          //   this.dataList.push(res.data.data.list[0])
+          // }
+          
         }else{
           
         }
       })
     },
+    goDetails(item){
+      this.$router.push({path:"/cashDe",query:item})
+    }
   }
 };
 </script>
@@ -149,7 +176,7 @@ export default {
 .record {
   width: 100%;
   height: 100%;
-  background: #eee;
+  background: #fff;
 }
 .main {
   width: 100%;
@@ -157,7 +184,7 @@ export default {
   overflow:scroll;
 }
 .list {
-  background: #fff;
+  width: 100%;
 }
 
 .record .tc_time {
@@ -182,6 +209,7 @@ export default {
   width: 100%;
   height: auto;
   padding: 0 0.2*3.125rem;
+  background: #fff;
 
   .item {
     width: 100%;
@@ -193,11 +221,14 @@ export default {
       width: 1*3.125rem;
       height: 1*3.125rem;
       border-radius: 0.5*3.125rem;
-      background: blue;
       margin-right: 0.2*3.125rem;
+      overflow: hidden;
+      position: relative;
       img {
-        width: 100%;
+        width: auto;
         height: 100%;
+        position: absolute;
+        left: -0.3rem;
       }
     }
     .itemText {
@@ -208,7 +239,7 @@ export default {
         height: 0.6*3.125rem;
         line-height: 0.8*3.125rem;
         font-size: 0.32*3.125rem;
-        color: #fe6631;
+        color: #333;
       }
       .textInfo {
         width: 100%;
@@ -219,8 +250,8 @@ export default {
       }
     }
     .itemTime {
-      width: 1.5*3.125rem;
-      height: 1*3.125rem;
+      width: auto;
+      height: 100%;
       text-align: center;
       line-height: 1.6*3.125rem;
       color: green;
@@ -229,6 +260,19 @@ export default {
       top: 0.1*3.125rem;
       right: 0.1*3.125rem;
       font-size: 0.28*3.125rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .status{
+        margin-bottom: 0.4rem;
+      }
+      span{
+        line-height: 1rem;
+      }
+      .time{
+        color: #999;
+      }
     }
   }
 }

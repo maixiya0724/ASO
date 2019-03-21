@@ -7,7 +7,7 @@
     <div class="userInfo">
       <div class="userInfoLeft">
         <p class="money">
-          <span>{{userInfo.total_score}}</span>元
+          <span>{{userInfo.score}}</span>元
         </p>
         <div class="infoText">
           <span>账户余额</span>
@@ -68,7 +68,7 @@
           <div class="imgTtitle">高额任务</div>
           <div class="titleInfo">赚高额奖金</div>
         </div> -->
-        <div class="friend">
+        <div class="friend" @click="goAffairs">
           <img src="https://res.youth.cn/ASO/img/friend.png" alt="">
           <div class="imgTtitle">商务客服</div>
         </div>
@@ -215,6 +215,16 @@ export default {
         }
       });
     },
+    goAffairs() {
+      this.$router.push({
+        path: "/affairs",
+        query: {
+          cookie: localStorage.getItem("cookie"),
+          cookie_id: localStorage.getItem("cookie_id")
+        }
+      });
+    },
+    
     notice() {
       var notice = this.$refs.notice;
       var left = 0;
@@ -243,6 +253,7 @@ export default {
       // 验证设备完成
       if (UDID) {
         this.validate = false;
+        this.bindUDID()
       } else {
         if (guide) {
           this.validate = true;
@@ -251,8 +262,10 @@ export default {
         }
       }
     },
-    async bindUDID(UDID) {
-      return $http.post("/WebApi/Udid/bindUdid", { UDID: UDID }).then(res => {
+    async bindUDID() {
+      let deviceInfo = JSON.parse(localStorage.getItem("deviceInfo"))
+      console.log(deviceInfo)
+      return $http.post("/WebApi/Udid/bindUdid",{udid:deviceInfo.UDID,product:deviceInfo.PRODUCT,version:deviceInfo.DEVICE_VERSION}).then(res => {
         console.log(res);
       });
     },
@@ -277,7 +290,7 @@ export default {
   }
 };
 </script>
-<style lang="less" >
+<style lang="less" scoped>
 //@px*3.125rem:3.125
 
 .alert {
@@ -351,8 +364,7 @@ export default {
         height: 0.9 * 3.125rem;
         border-radius: 0.45 * 3.125rem;
         overflow: hidden;
-        border: 1ps solid #fff;
-        background: blue;
+        border: 1px solid #fff;
         margin: 0 auto;
         img {
           width: 100%;

@@ -20,7 +20,7 @@
             </header>
             <div class="wc_main">
                 <p class="money_title">余额 （元）</p>
-                <div class="money_num">{{userInfo.total_score}}</div>
+                <div class="money_num">{{userInfo.score}}</div>
                 <div class="notice clearfix">
                     <i class="marquee_text_ico fl">
                         <img
@@ -199,7 +199,6 @@ export default {
       this.$router.push({
         path: "/cashwx",
         query: {
-          total: this.params.total,
           cookie: localStorage.getItem("cookie"),
           cookie_id: localStorage.getItem("cookie_id")
         }

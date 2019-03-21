@@ -20,57 +20,53 @@
         </div>
 
         <div class="cashMain">
-          <div class="iconImg"></div>
+          <div class="iconImg">
+            <img v-if="dataInfo.logo=='alipay'"  src="https://res.youth.cn/ASO/zhiFuBao.png" alt="">
+              <img v-if="dataInfo.logo!='alipay'"  src="https://res.youth.cn/ASO/weixinIcon.png" alt="">
+
+          </div>
           <div class="cashInfo">支付宝提现</div>
-          <div class="cashNum">10元</div>
+          <div class="cashNum">{{dataInfo.score}}元</div>
         </div>
         <div class="line"></div>
         <div class="infoList">
           <div class="infoItem">
             <div class="itemTitle">提现时间</div>
-            <div class="itemText">2019-02-14</div>
+            <div class="itemText">{{dataInfo.time}}</div>
           </div>
           <div class="infoItem">
             <div class="itemTitle">提现信息</div>
-            <div class="itemText">支付宝</div>
+            <div class="itemText" v-if="dataInfo.logo=='alipay'" >支付宝</div>
+            <div class="itemText" v-if="dataInfo.logo!='alipay'" >微信</div>
           </div>
           <div class="infoItem">
-            <div class="itemTitle">提现状态</div>
-            <div class="itemText">提现失败</div>
+              <div class="itemTitle">提现状态</div>
+              <div class="itemText" style="color:#fe6631;" v-if="dataInfo.status=='0'">提现中</div>
+              <div class="itemText" style="color:green;" v-if="dataInfo.status=='1'">提现成功</div>
+              
+              <div class="itemText" style="color:#fe6631;" v-if="dataInfo.status=='2'">提现失败,订单已退回</div>
+              <div class="itemText" style="color:#fe6631;" v-if="dataInfo.status=='3'">提现失败,订单已退回</div>
           </div>
-          <div class="infoItem">
+          <div class="infoItem" v-if="dataInfo.status=='2' || dataInfo.status=='3'">
             <div class="itemTitle">原因</div>
-            <div class="itemText">支付宝必须实名认证,请修改后，重新提现!</div>
+            <div  class="itemText">{{dataInfo.description}}</div>
           </div>
         </div>
-        
     </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      dataInfo:this.$route.query,
+    };
   },
   mounted() {
-    this.rem();
+
   },
   methods: {
-    rem: function() {
-      (function(doc, win) {
-        var docEl = doc.documentElement,
-          resizeEvt =
-            "orientationchange" in window ? "orientationchange" : "resize",
-          recalc = function() {
-            var clientWidth = docEl.clientWidth;
-            if (!clientWidth) return;
-            docEl.style.fontSize = 16 * (clientWidth / 375) + "px";
-          };
-        if (!doc.addEventListener) return;
-        win.addEventListener(resizeEvt, recalc, false);
-        doc.addEventListener("DOMContentLoaded", recalc, false);
-      })(document, window);
-    }
+
   }
 };
 </script>
@@ -97,9 +93,18 @@ export default {
 .iconImg{
   width: 3rem;
   height: 3rem;
-  background: blue;
   border-radius: 1.5rem;
   margin-top: 1rem;
+  overflow: hidden;
+  position: relative;
+  img{
+    width:4.5rem;
+    height:auto;
+    position: absolute;
+    left: -0.65rem;
+    top: -0.2rem;
+
+  }
 }
 .cashInfo{
   font-size: 14px;

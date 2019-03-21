@@ -158,7 +158,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .noData{
   width: 100%;
   height: 4rem;
@@ -274,7 +274,6 @@ export default {
       width: 1*3.125rem;
       height: 1*3.125rem;
       border-radius: 0.5*3.125rem;
-      background: blue;
       margin-right: 0.2*3.125rem;
       img {
         width: 100%;

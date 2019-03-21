@@ -60,7 +60,7 @@
                                 data-link="/ios/user/income.html"
                             >
                                 <p>
-                                    <span>{{userInfo.total_score}}</span>元
+                                    <span>{{userInfo.score}}</span>元
                                 </p>
                                 <div class="btn_center" @click="goCash">提现中心</div>
                             </div>
@@ -68,7 +68,7 @@
                                 <p>
                                     <span>{{userInfo.invit_num}}</span>人
                                 </p>
-                                <div class="btn_recruit">收徒数量</div>
+                                <div class="btn_recruit" @click="goTeacherDe">收徒数量</div>
                             </div>
                         </div>
                     </div>
@@ -229,7 +229,7 @@ export default {
   },
   methods: {
     goCash() {
-      this.$router.push({ path: "/cash", query: {total:this.userInfo.total_score,cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")}});
+      this.$router.push({ path: "/cash", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")}});
     },
     taskDetails() {
       this.$router.push({ path: "/cash", query: {cookie:localStorage.getItem("cookie"),cookie_id:localStorage.getItem("cookie_id")} });
@@ -267,7 +267,7 @@ export default {
   }
 };
 </script>
-<style lang="less" >
+<style lang="less" scoped>
 .jiantou{
     position: relative;
     top: 0.25rem;

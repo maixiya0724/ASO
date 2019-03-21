@@ -12,7 +12,7 @@ require('es6-promise').polyfill()
 Es6Promise.polyfill()
 Vue.use(MintUI)
 Vue.config.productionTip = false;
-const vConsole = new VConsole(); // 不使用的时候，可以将这句屏蔽掉；
+//const vConsole = new VConsole(); // 不使用的时候，可以将这句屏蔽掉；
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

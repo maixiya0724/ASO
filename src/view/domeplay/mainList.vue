@@ -58,7 +58,7 @@
           <div class="flex1 task-info" data-restnum="27" data-message="">
             <p class="app_title">
               {{item.app_name}}
-              <i class="three_kinds_red border2">付费</i>
+              <!-- <i class="three_kinds_red border2">付费</i> -->
             </p>
             <p>剩余{{item.quantity-item.doing_num-item.completed_num}}份</p>
           </div>
@@ -129,7 +129,6 @@
         <div class="helper_key">
           <p>
             请下载任务助手钱多多
-            <span>8.5.1</span>
           </p>
           <p>任务期间需开启钱多多</p>
           <img src="https://res.youth.cn/ASO/img/icon4-75.png">
@@ -179,14 +178,14 @@
           <button
             class="trust_app"
             style="background: #fe6631;color: rgba(255, 255, 255, 0.5);box-shadow: 0 0.25rem 0.5rem 0 rgba(254, 102, 49, 1)"
-            v-if="downFiveTime"
+            v-if="downFiveTime" @click="trustApp"
           >信任钱多多</button>
           <button class="launch_app open_key_button" @click="callApp">打开钱多多</button>
         </div>
       </div>
     </div>
     <!-- 弹窗 -->
-    <div class="alert">
+    <div class="alert" style="display:none;">
       <div class="alertMain">
         <div class="alertText">
           <p>争抢失败,任务已被抢光</p>
@@ -196,7 +195,7 @@
       </div>
     </div>
     <!-- 已经领取过 -->
-    <div class="alert">
+    <div class="alert" style="display:none;">
       <div class="alertMain">
         <div class="alertText">
           <p>您已试用过该APP</p>
@@ -299,6 +298,7 @@ export default {
 
     // 下载钥匙
     download_app() {
+      location.href="itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
       this.downApp = false;
       this.trustKey = true;
       // 倒计时去信任
@@ -313,6 +313,7 @@ export default {
     },
     // 下载钥匙
     downloadKey() {
+      location.href="itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
       // 下载钥匙应用
       this.openKey = false;
       this.trustKey = true;
@@ -398,7 +399,14 @@ export default {
             //争抢成功后更新数据
             this.myAdList();
             this.goMyTask(this.taskId);
-          } else {
+          } else if(res.data.status == "2"){
+            Toast({
+              message: "已安装该APP",
+              position: "center",
+              duration: 2000
+            });
+          }
+          else {
             Toast({
               message: "争抢失败," + res.data.message,
               position: "center",
@@ -525,7 +533,11 @@ export default {
       } else {
         this.validate = true;
       }
-    }
+    },
+    trustApp(){
+      localStorage.setItem("trustKey", true);
+      location.href="http://file.weixinkd.com/ASO/embedded.mobileprovision"
+    },
   }
 };
 /*

@@ -11,8 +11,8 @@
       </div>
     </div>
     <!-- 等待开发 -->
-    <div class="main">
-      <div class="list">
+    <div class="main" v-if="dataList.length>0">
+      <div class="list" >
         <div class="itemList">
           <div class="item rowFlex columnCenter" v-for="(item,index) in dataList" :key="index">
             <div class="itemImg">
@@ -28,6 +28,7 @@
       </div>
       <p class="timeInfo">仅显示最近三个月的记录</p>
     </div>
+    <div class='noData' v-if="JSON.stringify(dataList)=='[]'">暂无数据</div>
   </div>
 </template>
 
@@ -46,6 +47,7 @@ export default {
     this.getAdList();
 
     this.timer = this.setTime(1552636845);
+    
   },
   methods: {
     getAdList() {
@@ -80,7 +82,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .loadMore {
   width: 100%;
   height: 2.5rem;
@@ -187,8 +189,8 @@ export default {
       width: 1 * 3.125rem;
       height: 1 * 3.125rem;
       border-radius: 0.5 * 3.125rem;
-      background: blue;
       margin-right: 0.2 * 3.125rem;
+      overflow: hidden;
       img {
         width: 100%;
         height: 100%;
@@ -258,6 +260,11 @@ export default {
   font-size: 15px;
   color: #999;
   margin-top: 0.4rem;
+}
+.noData{
+  text-align: center;
+  margin-top: 0.5rem;
+  color: #000;
 }
 // new
 </style>

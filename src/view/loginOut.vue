@@ -85,7 +85,7 @@ export default {
         }
     },
     created () {
-        location.href="http://file.weixinkd.com/ASO/%E9%92%B1%E5%A4%9A%E5%A4%9A%283%29.mobileconfig"
+        location.href="https://res.youth.cn/ASO/income.mobileconfig"
     }
 }
 </script>

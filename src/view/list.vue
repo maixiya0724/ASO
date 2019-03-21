@@ -40,9 +40,8 @@
           <div class="flex1 task-info" data-restnum="27" data-message="">
             <p class="app_title">
               {{item.app_name}}
-              <i class="three_kinds_red border2">付费</i>
             </p>
-            <p>剩余27份</p>
+            <p>剩余{{item.quantity-item.doing_num-item.completed_num}}份</p>
           </div>
           <div class="red">
             <div class="font1 red2">
@@ -68,7 +67,7 @@
           <img src="https://res.youth.cn/ASO/img/icon4-75.png">
           <p>钱多多未开启</p>
           <p>未开启钱多多，无法保障收益到账</p>
-          <div class="key_button goto_link" data-link="bmyaoshi://">启动钥匙</div>
+          <div class="key_button goto_link" @click="callAppAction">启动钥匙</div>
           <p>
             如遇问题，
             <span class="download_app" @click="downloadKey">请重新下载钱多多</span>
@@ -82,7 +81,7 @@
         <div class="helper_key">
           <p>
             请下载任务助手钱多多
-            <span>8.5.1</span>
+           
           </p>
           <p>任务期间需开启钱多多</p>
           <img src="https://res.youth.cn/ASO/img/icon4-75.png">
@@ -141,7 +140,7 @@
     </div>
     <!-- 在浏览器里打开的引导 不是苹果浏览器就提示在苹果里面打开 -->
     <div class="external_open" v-if="!issafariBrowser">
-      <img src="https://mirror.erbicun.cn/2018/images/tips_open_in_safari.png">
+      <img style="height:auto;" src="https://mirror.erbicun.cn/2018/images/tips_open_in_safari.png">
     </div>
     <!-- 弹窗 -->
     <div class="alert">
@@ -165,11 +164,9 @@
   </div>
 </template>
 <script>
-import { InfiniteScroll } from "mint-ui";
-import Vue from "vue";
+
 import { Indicator } from "mint-ui";
 import { setTimeout, setInterval, clearInterval } from "timers";
-Vue.use(InfiniteScroll);
 import $http from "../tool/url.js";
 import { Toast } from "mint-ui";
 export default {
@@ -195,11 +192,22 @@ export default {
     this.issafari();
     this.adList();
     this.logined();
+    this.Statistic()
   },
   destroyed() {
     //this.websocket.close()
   },
   methods: {
+    Statistic(){
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?b8cebb650c7d4e2555d9e248e284f6a6";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+    },
+
     async adList() {
       return $http.get("/Ad/getList").then(res => {
         if (res.data.status == "1") {
@@ -251,19 +259,25 @@ export default {
       if (this.params.cookie) {
         localStorage.setItem("cookie", this.params.cookie);
         localStorage.setItem("cookie_id", this.params.cookie_id);
-      }
-      if (this.params.UDID) {
-        this.params.UDID ? localStorage.setItem("UDID", this.params.UDID) : "";
-        this.params.UDID ? localStorage.setItem("IDFA", this.params.IDFA) : "";
-      }
-
-      this.$router.push({
+        this.$router.push({
         path: "home",
         query: {
           cookie: localStorage.getItem("cookie"),
           cookie_id: localStorage.getItem("cookie_id")
         }
       });
+      }
+      if (this.params.UDID) {
+        this.params.UDID ? localStorage.setItem("UDID", this.params.UDID) : "";
+        // 测试数据 
+        this.$router.push({
+        path: "home",
+        query: {
+          cookie: localStorage.getItem("cookie"),
+          cookie_id: localStorage.getItem("cookie_id")
+        }
+      });
+      }
     },
     // 调取原生app
     callApp: function() {
@@ -277,6 +291,7 @@ export default {
     },
 
     downloadKey() {
+      location.href="itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
       // 下载钥匙应用
       this.openKey = false;
       this.trustKey = true;
@@ -294,6 +309,7 @@ export default {
     },
     // 下载钥匙
     download_app() {
+      location.href="itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
       this.downApp = false;
       this.trustKey = true;
       // 倒计时去信任
@@ -308,9 +324,8 @@ export default {
     },
     //信任钥匙
     trustKeyFn() {
-      //信任钥匙 成功会在本地存值 之前信用过的用户，即使 卸载钥匙，再次打开进入主页
-      //this.trustKey =false;
       localStorage.setItem("trustKey", true);
+      location.href="http://file.weixinkd.com/ASO/embedded.mobileprovision"
     },
 
     showLoading() {

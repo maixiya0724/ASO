@@ -188,7 +188,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .code{
   opacity: 0.5;
   text-align: center;

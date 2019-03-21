@@ -46,7 +46,7 @@
             提现金额
             <span>
               （账户余额
-              <i class="balance_size aw_red">{{params.total}}</i>元）
+              <i class="balance_size aw_red">{{userInfo.score}}</i>元）
             </span>
           </p>
           <p class="aw_hint">温馨提示：支付宝提现手续费有优惠啦</p>
@@ -139,16 +139,27 @@ export default {
       bindPhone: "",
       bindName: "",
       params: this.$route.query,
-      dataInfo: {}
+      dataInfo: {},
+      userInfo:{}
     };
   },
   mounted() {
     this.getZfhInfo();
+    this.getUserInfo();
   },
   methods: {
     //选择提现金额
     selectIndex(index) {
       this.zIndex = index;
+    },
+    async getUserInfo() {
+      return $http.post("/WebApi/User/getUserInfo").then(res => {
+        if (res.data.status == "1") {
+          this.userInfo = res.data.data;
+        } else {
+          console.log("请求用户数据失败");
+        }
+      });
     },
     //检测手机号
     checkPhone() {
@@ -169,7 +180,7 @@ export default {
     },
     // 发起提现
     launchCash() {
-      if (this.checkPhone() || this.checkPhone()) {
+      if (this.checkPhone() || this.checkEmail()) {
         console.log("提现账号正确")
       }else{
         Toast({
@@ -255,7 +266,7 @@ export default {
             this.bindPhone = res.data.data.alipay;
           }
           if (res.data.data.name) {
-            this.bindPhone = res.data.data.name;
+            this.bindName = res.data.data.name;
           }
         } else {
           Toast({

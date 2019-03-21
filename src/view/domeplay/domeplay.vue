@@ -539,7 +539,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scpoed>
 .task_details .copy_succ_box .hint_gray {
   display: flex;
   justify-content: center;
