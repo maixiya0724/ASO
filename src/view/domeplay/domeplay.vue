@@ -24,8 +24,7 @@
         </div>
       </div>
       <div class="detail_new_v2Text">
-        <span>专属任务:</span>完成限时任务后,后续再打开
-        <span>1</span>天,每天获得
+        <span>专属任务:</span>完成限时任务后,获得奖励(应用以图标为主，排名仅作参考)。
       </div>
       <div class="keyword_box">
         <img :src="taskInfo.thumb">
@@ -51,12 +50,12 @@
         </p>
       </div>
       <div id="copyKeywords" class="keyword_btn">
-        <a
-          class="copy_keyword"
+        <button
+          class="copy_keyword btn"
           id="copy_keyword"
           :data-clipboard-text="copyValue"
           @click="copy"
-        >复制关键词</a>
+        >复制关键词</button>
       </div>
       <div
         id="openApp"
@@ -69,6 +68,7 @@
       <div id="checkStatus" class="keyword_btn" style="overflow:hidden;" @click="checkTaskStatus">
         <a class="border">检查完成状态</a>
       </div>
+      
       <div
         id="abortTask"
         class="keyword_btn no_style"
@@ -283,7 +283,6 @@ export default {
   },
   mounted() {
     this.getInfo();
-    this.copy();
   },
   destroyed() {},
   watch: {
@@ -419,13 +418,12 @@ export default {
     copy() {
       this.btnCopy = new Clipboard(document.getElementById("copy_keyword"));
       this.btnCopy.on("success", e => {
-        console.log(e);
-        if (!localStorage.getItem("noalert")) {
           this.copyText = true;
-        } else {
-          this.copyText = false;
-        }
       });
+      this.btnCopy.on("error", e => {
+          this.copyText = true;
+      });
+     
     },
     getTime: function(endTime) {
       var startDate = new Date().getTime();
@@ -540,6 +538,21 @@ export default {
 };
 </script>
 <style lang="less" scpoed>
+
+#copyKeywords .btn{
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    border-radius: 0.3125rem;
+    width: 15.9375rem;
+    font-size: 1rem;
+    color: #fff;
+    display: block;
+    text-align: center;
+    background: #fe6631;
+    border:none;
+    display: block;
+}
 .task_details .copy_succ_box .hint_gray {
   display: flex;
   justify-content: center;
@@ -604,6 +617,15 @@ export default {
 .keyword_box {
   margin-top: 2rem !important;
 }
+.task_details .detail_new_v2 .keyword_btn{
+  width: 15.9375rem;
+  height: 2.8125rem;
+}
+.copy_keyword{
+  width: 100%;
+  height: 100%;
+}
+
 .task_details .detail_new_v2 .keyword_btn .border {
   background: #fff;
   color: #ff9900;

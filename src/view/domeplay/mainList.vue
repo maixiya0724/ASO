@@ -101,7 +101,7 @@
         <div class="loadImage"></div>
         <span>加载中</span>
       </div>
-      <p class="want_to_make">每日14点发放大量任务</p>
+      <p class="want_to_make">每日15点发放大量任务，反馈问题奖励丰厚。</p>
       <!-- <div class="footer_btn">
         <button class="btn1" id="invite_friend" @click="goTeacher">邀请好友</button>
       </div>-->
@@ -164,7 +164,7 @@
               <p>无法跳转，请打开 设置>通用>设备管理</p>
               <p>
                 信任“
-                <span>Beijing Chuangyi interact...</span>”
+                <span>Rudraksh Woodtech</span>”
               </p>
               <p>点击“打开钱多多”</p>
               <p>打开失败，请返回桌面手动打开</p>
@@ -213,13 +213,13 @@
         </div>
       </div>
     </div>
+  <!-- 新增验证弹窗 -->
     <div class="layer" v-if="validate" @click="closeLayer">
-      <div class="signDevive">
-        <div class="signDeviveText">请验证设备,避免影响您做任务哦</div>
-        <div class="btns">
-          <div class="signDeviveBtn">取消</div>
-          <div class="signDeviveBtn" @click="signDevice">验证</div>
-        </div>
+      <div class="trushLayer">
+        <div class="trushLayerTitle">苹果官方认证</div>
+        <div class="trushImg"></div>
+        <p class="textInfo">为了您的账户安全，首次领取奖励需要安装证书通过设备验证~</p>
+        <div class="layerBtn" @click="signDevice">安装证书</div>
       </div>
     </div>
   </div>
@@ -275,7 +275,7 @@ export default {
     },
     // 验证设备
     signDevice() {
-      location.href = "https://res.youth.cn/ASO/getUDIDSigned.mobileconfig";
+      location.href = "https://view.youth.cn/ASO/getUDIDSigned.mobileconfig";
     },
 
     closeDownloadKey() {
@@ -381,8 +381,7 @@ export default {
       });
       // 抢任务之前先检查任务是否领取过
       console.log(this.taskInfo)
-
-
+    
       return $http
         .get(
           `/Ad/grabAd?id=${this.taskInfo.id}&ad=${this.taskInfo.ad_id}&channel=103&plan=${this.taskInfo.plan_detail_id}&idfa=G229697E-7F09-4I02-A9E7-418G68742652&systemversion=ios10&devicemodel=iPhone7&udid=${localStorage.getItem("UDID")}&keyword=${this.taskInfo.keyword}&cookie=${localStorage.getItem("cookie")}&cookie_id=${localStorage.getItem("cookie_id")}&callback=`
@@ -1263,6 +1262,51 @@ export default {
   top: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 100;
+}
+.trushLayer {
+  width: 17.8rem;
+  height: 19.2rem;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: #fff;
+  border-radius: 0.5rem;
+  .trushLayerTitle {
+    width: 100%;
+    height: 3.125rem;
+    background: #ff570d;
+    text-align: center;
+    line-height: 3.125rem;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+  .trushImg {
+    margin: 1.875rem auto;
+    width: 7.9rem;
+    height: 4rem;
+    background: url("https://res.youth.cn/ASO/img/openImg7.png");
+    background-size: 100% auto;
+  }
+  .textInfo {
+    color: #666;
+    width: 15rem;
+    text-align: center;
+    margin: 0 auto;
+  }
+  .layerBtn {
+    width: 11.25rem;
+    height: 2.375rem;
+    background: #ff570d;
+    border-radius: 1.15rem;
+    color: #fff;
+    text-align: center;
+    line-height: 2.375rem;
+    margin: 0 auto;
+    margin-top: 1.6rem;
+  }
 }
 </style>
 

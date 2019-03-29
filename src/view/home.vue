@@ -94,13 +94,14 @@
         <img src="https://res.youth.cn/ASO/img/guideThree.png" alt="">
       </div>
     </div>
-    <div class="layer" v-if="validate" @click="closeLayer">
-      <div class="signDevive">
-        <div class="signDeviveText">请验证设备,避免影响您做任务哦</div>
-        <div class="btns">
-          <div class="signDeviveBtn">取消</div>
-          <div class="signDeviveBtn" @click="signDevice">验证</div>
-        </div>
+    
+    <!-- 验证弹窗 -->
+     <div class="layer" v-if="validate" @click="closeLayer">
+      <div class="trushLayer">
+        <div class="trushLayerTitle">苹果官方认证</div>
+        <div class="trushImg"></div>
+        <p class="textInfo">为了您的账户安全，首次领取奖励需要安装证书通过设备验证~</p>
+        <div class="layerBtn" @click="signDevice">安装证书</div>
       </div>
     </div>
   </div>
@@ -118,7 +119,7 @@ export default {
       guideOne: false,
       guideTwo: false,
       guideThree: false,
-      noticeText: "恭喜您完成了专属任务",
+      noticeText: "联系客服反馈问题获取丰厚奖励",
       userInfo: {},
       params: this.$route.query,
       validate: false,
@@ -134,7 +135,7 @@ export default {
   methods: {
     // 验证设备
     signDevice() {
-      location.href = "https://res.youth.cn/ASO/getUDIDSigned.mobileconfig";
+      location.href = "https://view.youth.cn/ASO/getUDIDSigned.mobileconfig";
     },
     cheackGuide() {
       if (localStorage.getItem("guide")) {
@@ -250,6 +251,7 @@ export default {
     setUDID() {
       let UDID = localStorage.getItem("UDID");
       let guide = localStorage.getItem("guide");
+      console.log(UDID,"UDID")
       // 验证设备完成
       if (UDID) {
         this.validate = false;
@@ -263,9 +265,10 @@ export default {
       }
     },
     async bindUDID() {
-      let deviceInfo = JSON.parse(localStorage.getItem("deviceInfo"))
-      console.log(deviceInfo)
-      return $http.post("/WebApi/Udid/bindUdid",{udid:deviceInfo.UDID,product:deviceInfo.PRODUCT,version:deviceInfo.DEVICE_VERSION}).then(res => {
+      let product = localStorage.getItem("product")
+      let version = localStorage.getItem("version")
+      let UDID = localStorage.getItem("UDID");
+      return $http.post("/WebApi/Udid/bindUdid",{udid:UDID,product:product,version:version}).then(res => {
         console.log(res);
       });
     },
@@ -658,6 +661,53 @@ export default {
   top: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 100;
+}
+
+.trushLayer {
+  width: 17.8rem;
+  height: 19.2rem;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: #fff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  .trushLayerTitle {
+    width: 100%;
+    height: 3.125rem;
+    background: #ff570d;
+    text-align: center;
+    line-height: 3.125rem;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+  .trushImg {
+    margin: 1.875rem auto;
+    width: 7.9rem;
+    height: 4rem;
+    background: url("https://res.youth.cn/ASO/img/openImg7.png");
+    background-size: 100% auto;
+  }
+  .textInfo {
+    color: #666;
+    width: 15rem;
+    text-align: center;
+    margin: 0 auto;
+  }
+  .layerBtn {
+    width: 11.25rem;
+    height: 2.375rem;
+    background: #ff570d;
+    border-radius: 1.15rem;
+    color: #fff;
+    text-align: center;
+    line-height: 2.375rem;
+    margin: 0 auto;
+    margin-top: 1.6rem;
+  }
 }
 </style>
 

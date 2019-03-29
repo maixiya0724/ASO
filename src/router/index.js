@@ -22,6 +22,8 @@ import CashWx from "../view/center/cash/cashWx.vue"
 import BindWx from "../view/center/bindWx.vue"
 import WxQr from "../view/center/wxQr.vue"
 import Affairs from "../view/center/affairs.vue"
+import OpenApp from "../view/openApp.vue"
+import Course from "../view/domeplay/course.vue"
 
 
 Vue.use(Router)
@@ -138,6 +140,17 @@ export default new Router({
       path:'/affairs',
       name:'affairs',
       component:Affairs,
-    }
+    },
+    {
+      path:'/openapp',
+      name:'openapp',
+      component:OpenApp,
+    },
+    {
+      path:'/course',
+      name:'course',
+      component:Course,
+    },
+    
   ]
 })

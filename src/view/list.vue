@@ -38,9 +38,7 @@
             <img :src="item.thumb" class="left_img">
           </div>
           <div class="flex1 task-info" data-restnum="27" data-message="">
-            <p class="app_title">
-              {{item.app_name}}
-            </p>
+            <p class="app_title">{{item.app_name}}</p>
             <p>剩余{{item.quantity-item.doing_num-item.completed_num}}份</p>
           </div>
           <div class="red">
@@ -79,10 +77,7 @@
       <div class="dialog_flex"></div>
       <div class="dialog_flex1">
         <div class="helper_key">
-          <p>
-            请下载任务助手钱多多
-           
-          </p>
+          <p>请下载任务助手钱多多</p>
           <p>任务期间需开启钱多多</p>
           <img src="https://res.youth.cn/ASO/img/icon4-75.png">
           <button class="download_app" @click="download_app">
@@ -117,7 +112,7 @@
               <p>无法跳转，请打开 设置>通用>设备管理</p>
               <p>
                 信任“
-                <span>Beijing Chuangyi interact...</span>”
+                <span>Rudraksh Woodtech</span>”
               </p>
               <p>点击“打开钱多多”</p>
               <p>打开失败，请返回桌面手动打开</p>
@@ -140,7 +135,7 @@
     </div>
     <!-- 在浏览器里打开的引导 不是苹果浏览器就提示在苹果里面打开 -->
     <div class="external_open" v-if="!issafariBrowser">
-      <img style="height:auto;" src="https://mirror.erbicun.cn/2018/images/tips_open_in_safari.png">
+      <img style="height:auto;" src="https://mirror.erbicun.cn/2018/images/tips_open_in_safari.png"  @click="download_app">
     </div>
     <!-- 弹窗 -->
     <div class="alert">
@@ -164,7 +159,6 @@
   </div>
 </template>
 <script>
-
 import { Indicator } from "mint-ui";
 import { setTimeout, setInterval, clearInterval } from "timers";
 import $http from "../tool/url.js";
@@ -187,27 +181,15 @@ export default {
   created() {
     this.logined();
   },
-
   mounted() {
     this.issafari();
     this.adList();
     this.logined();
-    this.Statistic()
   },
   destroyed() {
-    //this.websocket.close()
+
   },
   methods: {
-    Statistic(){
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?b8cebb650c7d4e2555d9e248e284f6a6";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-    },
-
     async adList() {
       return $http.get("/Ad/getList").then(res => {
         if (res.data.status == "1") {
@@ -224,8 +206,8 @@ export default {
     // 检查webscoket状态
     checkScoket() {
       if (window.newWebsocket.readyState != "1") {
-          this.openKey = true;
-        }
+        this.openKey = true;
+      }
     },
     // 判断是否是safari浏览器
     issafari: function() {
@@ -259,24 +241,30 @@ export default {
       if (this.params.cookie) {
         localStorage.setItem("cookie", this.params.cookie);
         localStorage.setItem("cookie_id", this.params.cookie_id);
-        this.$router.push({
-        path: "home",
-        query: {
-          cookie: localStorage.getItem("cookie"),
-          cookie_id: localStorage.getItem("cookie_id")
-        }
-      });
+        setTimeout(() => {
+          this.$router.push({
+            path: "home",
+            query: {
+              cookie: localStorage.getItem("cookie"),
+              cookie_id: localStorage.getItem("cookie_id")
+            }
+          });
+        }, 200);
       }
       if (this.params.UDID) {
         this.params.UDID ? localStorage.setItem("UDID", this.params.UDID) : "";
-        // 测试数据 
-        this.$router.push({
-        path: "home",
-        query: {
-          cookie: localStorage.getItem("cookie"),
-          cookie_id: localStorage.getItem("cookie_id")
-        }
-      });
+        localStorage.setItem("product", this.params.PRODUCT);
+        localStorage.setItem("version", this.params.DEVICE_VERSION);
+        setTimeout(() => {
+          this.$router.push({
+            path: "home",
+            query: {
+              cookie: localStorage.getItem("cookie"),
+              cookie_id: localStorage.getItem("cookie_id")
+            }
+          });
+        }, 200);
+        // 测试数据
       }
     },
     // 调取原生app
@@ -291,7 +279,8 @@ export default {
     },
 
     downloadKey() {
-      location.href="itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
+      location.href =
+        "itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
       // 下载钥匙应用
       this.openKey = false;
       this.trustKey = true;
@@ -309,7 +298,8 @@ export default {
     },
     // 下载钥匙
     download_app() {
-      location.href="itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
+      location.href =
+        "itms-services://?action=download-manifest&url=https://aso.baertt.com/1.plist";
       this.downApp = false;
       this.trustKey = true;
       // 倒计时去信任
@@ -325,7 +315,7 @@ export default {
     //信任钥匙
     trustKeyFn() {
       localStorage.setItem("trustKey", true);
-      location.href="http://file.weixinkd.com/ASO/embedded.mobileprovision"
+      location.href = "http://file.weixinkd.com/ASO/embedded.mobileprovision";
     },
 
     showLoading() {
